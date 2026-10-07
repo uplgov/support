@@ -1,1 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Support the Stories · Fictional Works</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-secondary: #10161f;
+      --text-primary: #e8edf5;
+      --text-secondary: #9aaebf;
+      --border-color: #1a2538;
+      --card-bg: #10161f;
+      --card-border: #222c38;
+      --btn-bg: #1e2a3a;
+      --accent-red: #cc3333;
+      --accent-green: #2ecc71;
+      --accent-amber: #f39c12;
+      --police-blue: #4a6b8c;
+      --fiction-accent: #d4aa4f;
+    }
+
+    body {
+      font-family: 'Georgia', 'Iowan Old Style', 'Songti SC', 'Noto Serif CJK SC', SimSun, serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background 0.3s;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* subtle crosshair cursor hint (theme consistency) */
+    body {
+      cursor: default;
+    }
+
+    .band {
+      height: 14px;
+      flex: none;
+      background: conic-gradient(#7da0d6 25%, #0b1220 0 50%, #7da0d6 0 75%, #0b1220 0) 0 0/28px 28px;
+      border-block: 1px solid #7da0d6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      width: 100%;
+    }
+
+    /* header / brand */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.2rem;
+    }
+
+    .brand span {
+      color: var(--fiction-accent);
+    }
+
+    .badge {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      background: var(--police-blue);
+      color: #0b1220;
+      font: 700 0.9rem Georgia, serif;
+    }
+
+    .fiction-note {
+      background: #1a1f2b;
+      border-left: 4px solid var(--fiction-accent);
+      padding: 0.9rem 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .fiction-note strong {
+      color: var(--fiction-accent);
+    }
+
+    /* main card */
+    .support-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 2.5rem 2.8rem;
+      margin: 2.5rem 0 1.5rem;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .support-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--fiction-accent), var(--police-blue), var(--accent-red));
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .subhead {
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+      border-left: 3px solid var(--fiction-accent);
+      padding-left: 1.2rem;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0 1.8rem;
+    }
+
+    .story-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.4rem 1.2rem;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .story-card:hover {
+      border-color: var(--fiction-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(212, 170, 79, 0.1);
+    }
+
+    .story-card .icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .story-card h3 {
+      font-size: 1.05rem;
+      color: var(--fiction-accent);
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+
+    .story-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--fiction-accent);
+      color: #0b1220;
+      font-weight: 700;
+      padding: 1rem 2.2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 1.15rem;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 16px rgba(212, 170, 79, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: #e6c15a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212, 170, 79, 0.35);
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--fiction-accent);
+      color: var(--fiction-accent);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .bmc-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .bmc-wrap img {
+      height: 60px;
+      transition: transform 0.2s ease;
+    }
+
+    .bmc-wrap img:hover {
+      transform: scale(1.04);
+    }
+
+    /* modal / confirmation overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      max-width: 720px;
+      width: 100%;
+      padding: 2.2rem 2.5rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      position: relative;
+      animation: modalIn 0.3s ease-out;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-box h2 {
+      font-size: 1.7rem;
+      color: var(--fiction-accent);
+      margin-bottom: 0.4rem;
+      font-weight: 700;
+    }
+
+    .modal-box .legal-sub {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .legal-text {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--text-primary);
+      margin-bottom: 1.8rem;
+    }
+
+    .legal-text p {
+      margin-bottom: 0.9rem;
+    }
+
+    .legal-text .highlight {
+      background: rgba(212, 170, 79, 0.12);
+      border-left: 3px solid var(--fiction-accent);
+      padding: 0.9rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.2rem 0;
+      font-size: 0.95rem;
+    }
+
+    .legal-text strong {
+      color: var(--fiction-accent);
+      font-weight: 700;
+    }
+
+    .legal-text ul {
+      padding-left: 1.4rem;
+      margin: 0.8rem 0 1rem;
+    }
+
+    .legal-text li {
+      margin-bottom: 0.5rem;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      background: var(--bg-primary);
+      padding: 1.1rem 1.3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 1.6rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .checkbox-row:hover {
+      border-color: var(--fiction-accent);
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      accent-color: var(--fiction-accent);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-row label {
+      cursor: pointer;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--text-primary);
+    }
+
+    .checkbox-row label strong {
+      color: var(--fiction-accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: flex-end;
+      margin-top: 0.5rem;
+    }
+
+    .btn-small {
+      padding: 0.75rem 1.6rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-confirm {
+      background: var(--fiction-accent);
+      color: #0b1220;
+    }
+
+    .btn-confirm:hover {
+      background: #e6c15a;
+    }
+
+    .btn-confirm:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .btn-cancel:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .footer-note {
+      text-align: center;
+      padding: 2.5rem 1rem 2rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+      line-height: 1.6;
+    }
+
+    .footer-note a {
+      color: var(--fiction-accent);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--fiction-accent);
+    }
+
+    .footer-note a:hover {
+      border-bottom-style: solid;
+    }
+
+    .disclaimer-banner {
+      background: #1a1f2b;
+      border: 1px dashed var(--fiction-accent);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin: 1.8rem 0;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .disclaimer-banner strong {
+      color: var(--fiction-accent);
+    }
+
+    @media (max-width: 640px) {
+      .support-card {
+        padding: 1.8rem 1.4rem;
+      }
+      .modal-box {
+        padding: 1.6rem 1.3rem;
+      }
+      .top-bar {
+        padding: 1rem 1.2rem;
+      }
+      .container {
+        padding: 0 1.2rem;
+      }
+      .action-row {
+        flex-direction: column;
+      }
+      .action-row .btn-primary,
+      .action-row .btn-secondary {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="band"></div>
+
+  <!-- top bar -->
+  <header class="top-bar">
+    <div class="brand">
+      <span class="badge">◈</span>
+      <span>Storyteller's <span>Support</span></span>
+    </div>
+    <div style="font-size:0.85rem;color:var(--text-secondary);font-style:italic;">
+      fiction · imagination · craft
+    </div>
+  </header>
+
+  <!-- fiction notice banner -->
+  <div class="fiction-note">
+    <span>📖</span>
+    <span><strong>All works are fictional.</strong> No real persons, places, or events are depicted. This is a creative writing project.</span>
+  </div>
+
+  <!-- main support page -->
+  <div class="container">
+    <div class="support-card" id="supportCard">
+      <h1>Support the <span style="color: var(--fiction-accent);">Stories</span></h1>
+      <p class="subhead">
+        Every universe, every character, every twist — crafted with care and a lot of coffee.
+        If you enjoy the worlds I build, you can help keep the ink flowing.
+      </p>
+
+      <div class="story-grid">
+        <div class="story-card">
+          <span class="icon">🌍</span>
+          <h3>Multiple Universes</h3>
+          <p>From procedurals to speculative fiction — interconnected but each standing alone.</p>
+        </div>
+        <div class="story-card">
+          <span class="icon">✍️</span>
+          <h3>Original Fiction</h3>
+          <p>Every story is an original work of imagination. Nothing is based on real events.</p>
+        </div>
+        <div class="story-card">
+          <span class="icon">🎭</span>
+          <h3>Free to Read</h3>
+          <p>All stories remain free. Support is optional and never required to enjoy the work.</p>
+        </div>
+      </div>
+
+      <div class="disclaimer-banner">
+        <strong>⚠️ Important:</strong> This is a <strong>fiction‑only</strong> creative project. 
+        No merchandise, services, physical goods, or real‑world assistance are offered or implied. 
+        Your support goes directly toward the time and tools used to write and publish these stories.
+      </div>
+
+      <!-- Buy Me a Coffee button (original) -->
+      <div class="bmc-wrap">
+        <a href="https://www.buymeacoffee.com/flamezingel" target="_blank" rel="noopener noreferrer">
+          <img 
+            src="https://img.buymeacoffee.com/button-api/?text=!Support my idea!&emoji=😇&slug=flamezingel&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" 
+            alt="Support my idea on Buy Me a Coffee"
+          />
+        </a>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-primary" id="openConfirmBtn">
+          ☕ Support &nbsp;→&nbsp; Confirm Fiction Terms
+        </button>
+        <button class="btn-secondary" id="readTermsBtn">
+          📄 Read Full Disclaimer
+        </button>
+      </div>
+
+      <p style="margin-top:1.5rem;font-size:0.82rem;color:var(--text-secondary);line-height:1.5;">
+        By clicking the support button, you will be asked to confirm that you understand 
+        all content is fictional and that no goods or services are exchanged.
+      </p>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="container" style="margin-top:auto;">
+    <div class="footer-note">
+      <p>
+        © 2025–2026 <strong>Storyteller's Support</strong> · All stories and universes are works of fiction.
+        No real persons, organisations, or events are represented.
+      </p>
+      <p style="margin-top:0.6rem;">
+        This page is a creative project. 
+        <a href="#" id="footerTermsLink">Read the full fiction disclaimer</a>.
+      </p>
+    </div>
+  </div>
+
+  <div class="band" style="margin-top:0;"></div>
+
+  <!-- ===== CONFIRMATION MODAL ===== -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-box">
+      <h2>Fiction Confirmation</h2>
+      <p class="legal-sub">
+        Please read and agree before proceeding to support the work.
+      </p>
+
+      <div class="legal-text">
+        <p>
+          <strong>1. Fictional Nature of All Content.</strong> 
+          All websites, stories, characters, organisations, events, and scenarios created by 
+          the author (collectively, the “Works”) are <strong>entirely fictional</strong>. 
+          They are products of imagination and creative expression. Any resemblance to actual 
+          persons, living or dead, or actual events, organisations, or locations is purely 
+          coincidental and unintentional.
+        </p>
+
+        <p>
+          <strong>2. No Real‑World Goods or Services.</strong> 
+          The Works are provided for entertainment and reading purposes only. 
+          <strong>No merchandise, physical products, services, assistance, or any form of 
+          real‑world exchange</strong> is offered, sold, promised, or implied through this 
+          support page, the Works, or any related platform.
+        </p>
+
+        <div class="highlight">
+          <strong>3. Voluntary Support Only.</strong> Any financial contribution made via 
+          third‑party platforms (e.g., Buy Me a Coffee) is a <strong>voluntary gift</strong> 
+          to the author. It does not constitute a purchase, subscription, contract, or 
+          expectation of any deliverable. Supporters receive no goods, services, perks, 
+          or special treatment in return.
+        </div>
+
+        <p>
+          <strong>4. No Reliance.</strong> You acknowledge that you are not relying on any 
+          representation, promise, or expectation of receiving anything in exchange for your 
+          support. You are supporting the <strong>creative effort</strong> of writing and 
+          maintaining these fictional works.
+        </p>
+
+        <p>
+          <strong>5. Limitation of Liability.</strong> To the fullest extent permitted by law, 
+          the author shall not be liable for any claim, damage, or loss arising from your 
+          support or from any misunderstanding regarding the fictional nature of the Works.
+        </p>
+
+        <p>
+          <strong>6. Acknowledgment.</strong> By ticking the box below and proceeding, you 
+          confirm that you:
+        </p>
+        <ul>
+          <li>Have read and understood this disclaimer;</li>
+          <li>Understand that all content is fictional and not real;</li>
+          <li>Do not expect any merchandise, service, or tangible benefit;</li>
+          <li>Are voluntarily supporting the author’s creative work.</li>
+        </ul>
+
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:1.2rem;">
+          This disclaimer is intended to be legally binding to the extent permitted by applicable law.
+          If you do not agree, please do not proceed with any support.
+        </p>
+      </div>
+
+      <div class="checkbox-row" id="agreeRow">
+        <input type="checkbox" id="agreeCheckbox">
+        <label for="agreeCheckbox">
+          <strong>I agree</strong> — I understand that all works are fictional, 
+          that no goods or services are provided, and that my support is a voluntary gift 
+          with no expectation of anything in return.
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-small btn-cancel" id="cancelModalBtn">Cancel</button>
+        <button class="btn-small btn-confirm" id="confirmProceedBtn" disabled>
+          Proceed to Support
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FULL DISCLAIMER MODAL (same content, no checkbox) ===== -->
+  <div class="modal-overlay" id="termsModal">
+    <div class="modal-box">
+      <h2>Fiction Disclaimer</h2>
+      <p class="legal-sub">Full terms regarding the fictional nature of all works.</p>
+
+      <div class="legal-text">
+        <p>
+          <strong>1. Fictional Nature of All Content.</strong> 
+          All websites, stories, characters, organisations, events, and scenarios created by 
+          the author (collectively, the “Works”) are <strong>entirely fictional</strong>. 
+          They are products of imagination and creative expression. Any resemblance to actual 
+          persons, living or dead, or actual events, organisations, or locations is purely 
+          coincidental and unintentional.
+        </p>
+
+        <p>
+          <strong>2. No Real‑World Goods or Services.</strong> 
+          The Works are provided for entertainment and reading purposes only. 
+          <strong>No merchandise, physical products, services, assistance, or any form of 
+          real‑world exchange</strong> is offered, sold, promised, or implied through this 
+          support page, the Works, or any related platform.
+        </p>
+
+        <div class="highlight">
+          <strong>3. Voluntary Support Only.</strong> Any financial contribution made via 
+          third‑party platforms (e.g., Buy Me a Coffee) is a <strong>voluntary gift</strong> 
+          to the author. It does not constitute a purchase, subscription, contract, or 
+          expectation of any deliverable. Supporters receive no goods, services, perks, 
+          or special treatment in return.
+        </div>
+
+        <p>
+          <strong>4. No Reliance.</strong> You acknowledge that you are not relying on any 
+          representation, promise, or expectation of receiving anything in exchange for your 
+          support. You are supporting the <strong>creative effort</strong> of writing and 
+          maintaining these fictional works.
+        </p>
+
+        <p>
+          <strong>5. Limitation of Liability.</strong> To the fullest extent permitted by law, 
+          the author shall not be liable for any claim, damage, or loss arising from your 
+          support or from any misunderstanding regarding the fictional nature of the Works.
+        </p>
+
+        <p>
+          <strong>6. Acknowledgment.</strong> By proceeding to support, you confirm that you 
+          have read and understood this disclaimer and that you do not expect any merchandise, 
+          service, or tangible benefit.
+        </p>
+
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:1.2rem;">
+          This disclaimer is intended to be legally binding to the extent permitted by applicable law.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-small btn-cancel" id="closeTermsBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const confirmModal = document.getElementById('confirmModal');
+      const termsModal = document.getElementById('termsModal');
+      const agreeCheckbox = document.getElementById('agreeCheckbox');
+      const confirmBtn = document.getElementById('confirmProceedBtn');
+      const openConfirmBtn = document.getElementById('openConfirmBtn');
+      const readTermsBtn = document.getElementById('readTermsBtn');
+      const cancelModalBtn = document.getElementById('cancelModalBtn');
+      const closeTermsBtn = document.getElementById('closeTermsBtn');
+      const footerTermsLink = document.getElementById('footerTermsLink');
+
+      // open confirmation modal (with checkbox)
+      function openConfirmModal() {
+        agreeCheckbox.checked = false;
+        confirmBtn.disabled = true;
+        confirmModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      // open terms-only modal
+      function openTermsModal() {
+        termsModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      // close all modals
+      function closeAllModals() {
+        confirmModal.classList.remove('active');
+        termsModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // event listeners
+      openConfirmBtn.addEventListener('click', openConfirmModal);
+      readTermsBtn.addEventListener('click', openTermsModal);
+      footerTermsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        openTermsModal();
+      });
+
+      cancelModalBtn.addEventListener('click', closeAllModals);
+      closeTermsBtn.addEventListener('click', closeAllModals);
+
+      // close on overlay click (but not on modal content)
+      [confirmModal, termsModal].forEach(function(overlay) {
+        overlay.addEventListener('click', function(e) {
+          if (e.target === overlay) {
+            closeAllModals();
+          }
+        });
+      });
+
+      // close on Escape
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeAllModals();
+        }
+      });
+
+      // checkbox enables confirm button
+      agreeCheckbox.addEventListener('change', function() {
+        confirmBtn.disabled = !this.checked;
+      });
+
+      // proceed to Buy Me a Coffee after confirmation
+      confirmBtn.addEventListener('click', function() {
+        if (!agreeCheckbox.checked) return;
+
+        // open BMC in new tab
+        window.open('https://www.buymeacoffee.com/flamezingel', '_blank', 'noopener,noreferrer');
+
+        // close modal
+        closeAllModals();
+
+        // optional subtle confirmation feedback (non-intrusive)
+        // we could show a small toast, but keep it clean.
+      });
+
+      // ensure focus trap is not overly complex; simple accessibility
+      // when modal opens, focus the first interactive element
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          if (m.target === confirmModal && confirmModal.classList.contains('active')) {
+            // focus checkbox
+            setTimeout(function() { agreeCheckbox.focus(); }, 80);
+          }
+          if (m.target === termsModal && termsModal.classList.contains('active')) {
+            setTimeout(function() { closeTermsBtn.focus(); }, 80);
+          }
+        });
+      });
+      observer.observe(confirmModal, { attributes: true, attributeFilter: ['class'] });
+      observer.observe(termsModal, { attributes: true, attributeFilter: ['class'] });
+
+    })();
+  </script>
+
+</body>
+</html>
