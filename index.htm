@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Support the Stories · Fictional Works</title>
+  <title>Support the UPL Project</title>
   <style>
     * {
       margin: 0;
@@ -25,6 +25,23 @@
       --accent-amber: #f39c12;
       --police-blue: #4a6b8c;
       --fiction-accent: #d4aa4f;
+      --cursor-color: rgba(204, 51, 51, 0.3);
+      --cursor-border: #cc3333;
+      --cc-navy: #7da0d6;
+      --cc-brass: #d4aa4f;
+    }
+
+    body.light {
+      --bg-primary: #f4f6f9;
+      --bg-secondary: #ffffff;
+      --text-primary: #1a2634;
+      --text-secondary: #3a4a5e;
+      --border-color: #d0d8e4;
+      --card-bg: #ffffff;
+      --card-border: #dce2ec;
+      --btn-bg: #eef2f7;
+      --cc-navy: #1b3358;
+      --cc-brass: #a87d22;
     }
 
     body {
@@ -38,9 +55,40 @@
       flex-direction: column;
     }
 
-    /* subtle crosshair cursor hint (theme consistency) */
-    body {
-      cursor: default;
+    #cursor-highlight {
+      position: fixed;
+      pointer-events: none;
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--cursor-border);
+      background: var(--cursor-color);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10000;
+      display: none;
+    }
+
+    #cursor-highlight::before,
+    #cursor-highlight::after {
+      content: '';
+      position: absolute;
+      background: #fff;
+    }
+
+    #cursor-highlight::before {
+      width: 18px;
+      height: 2px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #cursor-highlight::after {
+      width: 2px;
+      height: 18px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .band {
@@ -51,36 +99,55 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 0 2rem;
       width: 100%;
     }
 
-    /* header / brand */
     .top-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.2rem 2rem;
+      padding: 1rem 2rem;
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border-color);
       flex-wrap: wrap;
       gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
     .brand {
       font-weight: bold;
       letter-spacing: 1px;
-      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
+      cursor: pointer;
+      color: var(--text-primary);
+      user-select: none;
     }
 
-    .brand span {
-      color: var(--fiction-accent);
+    .brand .upl-shine {
+      display: inline-block;
+      background: linear-gradient(120deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #ff6b6b);
+      background-size: 400% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: uplShine 4s ease-in-out infinite;
+      font-weight: 900;
+      letter-spacing: 2px;
+      padding: 0 2px;
+    }
+
+    @keyframes uplShine {
+      0% { background-position: 0% center; }
+      50% { background-position: 200% center; }
+      100% { background-position: 400% center; }
     }
 
     .badge {
@@ -89,9 +156,115 @@
       width: 34px;
       height: 34px;
       border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      background: var(--police-blue);
-      color: #0b1220;
+      background: var(--cc-navy);
+      color: var(--bg-secondary);
       font: 700 0.9rem Georgia, serif;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .lang-switch-btn,
+    .tool-btn,
+    .acc-icon-btn {
+      padding: 5px 15px;
+      cursor: pointer;
+      background: var(--btn-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .lang-switch-btn:hover,
+    .tool-btn:hover {
+      border-color: var(--cc-brass);
+      color: var(--cc-brass);
+    }
+
+    .acc-icon-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      filter: grayscale(100%) contrast(1.2);
+      transition: filter 0.2s;
+    }
+
+    .acc-icon-btn:hover {
+      filter: grayscale(50%) contrast(1);
+    }
+
+    .acc-panel {
+      position: absolute;
+      top: 70px;
+      right: 2rem;
+      width: 340px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 25px;
+      z-index: 2000;
+      display: none;
+      border-radius: 8px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    }
+
+    .acc-panel.show {
+      display: block;
+      animation: dropIn 0.25s ease-out forwards;
+    }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .acc-item {
+      margin-bottom: 15px;
+    }
+
+    .acc-item label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+    }
+
+    .acc-select {
+      width: 100%;
+      padding: 8px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+
+    .acc-item input[type="range"] {
+      width: 100%;
+      accent-color: var(--cc-brass);
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      cursor: pointer;
+      background: var(--btn-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    .btn-action:hover {
+      border-color: var(--cc-brass);
     }
 
     .fiction-note {
@@ -110,7 +283,6 @@
       color: var(--fiction-accent);
     }
 
-    /* main card */
     .support-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
@@ -138,6 +310,19 @@
       margin-bottom: 0.5rem;
       font-weight: 700;
       letter-spacing: -0.01em;
+    }
+
+    h1 .upl-shine {
+      display: inline-block;
+      background: linear-gradient(120deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #ff6b6b);
+      background-size: 400% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: uplShine 4s ease-in-out infinite;
+      font-weight: 900;
+      letter-spacing: 2px;
+      padding: 0 3px;
     }
 
     .subhead {
@@ -256,7 +441,6 @@
       transform: scale(1.04);
     }
 
-    /* modal / confirmation overlay */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -277,7 +461,7 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 20px;
-      max-width: 720px;
+      max-width: 760px;
       width: 100%;
       padding: 2.2rem 2.5rem;
       max-height: 90vh;
@@ -459,6 +643,89 @@
       color: var(--fiction-accent);
     }
 
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .lang-option {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .lang-option:hover {
+      background: var(--police-blue);
+      transform: translateY(-2px);
+    }
+
+    .translate-banner {
+      background: #1a1f2b;
+      border: 1px solid var(--cc-brass);
+      border-radius: 12px;
+      padding: 1.1rem 1.4rem;
+      margin: 1.5rem 0;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+
+    .translate-banner p {
+      margin: 0;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .translate-banner .warning {
+      color: var(--accent-amber);
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: block;
+      margin-top: 0.3rem;
+    }
+
+    .translate-banner button {
+      background: var(--cc-brass);
+      color: #0b1220;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .translate-banner button:hover {
+      background: #e6c15a;
+    }
+
+    .translate-banner button.dismiss {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .translate-banner button.dismiss:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+      background: transparent;
+    }
+
     @media (max-width: 640px) {
       .support-card {
         padding: 1.8rem 1.4rem;
@@ -480,154 +747,194 @@
         width: 100%;
         text-align: center;
       }
+      .lang-grid {
+        grid-template-columns: 1fr;
+      }
+      .acc-panel {
+        right: 0.5rem;
+        left: 0.5rem;
+        width: auto;
+      }
     }
   </style>
 </head>
 <body>
 
+  <div id="cursor-highlight"></div>
+
   <div class="band"></div>
 
-  <!-- top bar -->
   <header class="top-bar">
-    <div class="brand">
+    <div class="brand" id="navBrand">
       <span class="badge">◈</span>
-      <span>Storyteller's <span>Support</span></span>
+      <span>Support the <span class="upl-shine">UPL</span> project</span>
     </div>
-    <div style="font-size:0.85rem;color:var(--text-secondary);font-style:italic;">
-      fiction · imagination · craft
+    <div class="nav-controls">
+      <button class="lang-switch-btn" id="langSwitchBtn">A/文</button>
+      <button class="tool-btn" id="themeToggleBtn">THEME</button>
+      <button class="acc-icon-btn" id="accToggleBtn" aria-label="Accessibility tools">♿</button>
+    </div>
+    <div class="acc-panel" id="accPanel">
+      <div class="acc-item">
+        <label id="contrastLabel">Contrast</label>
+        <input type="range" id="con-range" min="0.5" max="2" step="0.1" value="1">
+      </div>
+      <div class="acc-item">
+        <label id="grayscaleLabel">Grayscale</label>
+        <input type="range" id="gray-range" min="0" max="1" step="0.1" value="0">
+      </div>
+      <div class="acc-item">
+        <label id="saturateLabel">Saturate</label>
+        <input type="range" id="sat-range" min="0" max="3" step="0.1" value="1">
+      </div>
+      <div class="acc-item">
+        <label id="crosshairLabel">Crosshair Color</label>
+        <select id="cursor-color-select" class="acc-select">
+          <option value="rgba(204,51,51,0.3)|#cc3333">Red</option>
+          <option value="rgba(52,152,219,0.3)|#3498db">Blue</option>
+          <option value="rgba(50,205,50,0.3)|#32cd32">Lime</option>
+          <option value="rgba(255,255,0,0.3)|#ffff00">Yellow</option>
+        </select>
+      </div>
+      <div class="acc-item">
+        <label>
+          <input type="checkbox" id="cursor-cb">
+          <span id="cursorEnableLabel">Enable Crosshair Assist</span>
+        </label>
+      </div>
+      <button class="btn-action" id="resetAccBtn">Reset</button>
     </div>
   </header>
 
-  <!-- fiction notice banner -->
-  <div class="fiction-note">
+  <div class="fiction-note" id="fictionNote">
     <span>📖</span>
-    <span><strong>All works are fictional.</strong> No real persons, places, or events are depicted. This is a creative writing project.</span>
+    <span id="fictionNoteText"><strong>All works are fictional.</strong> No real persons, places, or events are depicted. This is a creative writing project.</span>
   </div>
 
-  <!-- main support page -->
-  <div class="container">
-    <div class="support-card" id="supportCard">
-      <h1>Support the <span style="color: var(--fiction-accent);">Stories</span></h1>
-      <p class="subhead">
-        Every universe, every character, every twist — crafted with care and a lot of coffee.
-        If you enjoy the worlds I build, you can help keep the ink flowing.
-      </p>
+  <div class="container" id="translateBannerContainer"></div>
 
-      <div class="story-grid">
-        <div class="story-card">
-          <span class="icon">🌍</span>
-          <h3>Multiple Universes</h3>
-          <p>From procedurals to speculative fiction — interconnected but each standing alone.</p>
+  <main id="mainFilter">
+    <div class="container">
+      <div class="support-card" id="supportCard">
+        <h1 id="supportTitle">Support the <span class="upl-shine">UPL</span> Project</h1>
+        <p class="subhead" id="supportSubhead">
+          Every universe, every character, every twist — crafted with care and a lot of coffee.
+          If you enjoy the worlds I build, you can help keep the ink flowing.
+        </p>
+
+        <div class="story-grid">
+          <div class="story-card">
+            <span class="icon">🌍</span>
+            <h3 id="card1Title">Multiple Universes</h3>
+            <p id="card1Desc">From procedurals to speculative fiction — interconnected but each standing alone.</p>
+          </div>
+          <div class="story-card">
+            <span class="icon">✍️</span>
+            <h3 id="card2Title">Original Fiction</h3>
+            <p id="card2Desc">Every story is an original work of imagination. Nothing is based on real events.</p>
+          </div>
+          <div class="story-card">
+            <span class="icon">🎭</span>
+            <h3 id="card3Title">Free to Read</h3>
+            <p id="card3Desc">All stories remain free. Support is optional and never required to enjoy the work.</p>
+          </div>
         </div>
-        <div class="story-card">
-          <span class="icon">✍️</span>
-          <h3>Original Fiction</h3>
-          <p>Every story is an original work of imagination. Nothing is based on real events.</p>
+
+        <div class="disclaimer-banner" id="disclaimerBanner">
+          <strong>⚠️ Important:</strong> This is a <strong>fiction‑only</strong> creative project.
+          No merchandise, services, physical goods, or real‑world assistance are offered or implied.
+          Your support goes directly toward the time and tools used to write and publish these stories.
         </div>
-        <div class="story-card">
-          <span class="icon">🎭</span>
-          <h3>Free to Read</h3>
-          <p>All stories remain free. Support is optional and never required to enjoy the work.</p>
+
+        <div class="bmc-wrap">
+          <a href="https://www.buymeacoffee.com/flamezingel" target="_blank" rel="noopener noreferrer">
+            <img
+              src="https://img.buymeacoffee.com/button-api/?text=!Support my idea!&emoji=😇&slug=flamezingel&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
+              alt="Support my idea on Buy Me a Coffee"
+            />
+          </a>
         </div>
-      </div>
 
-      <div class="disclaimer-banner">
-        <strong>⚠️ Important:</strong> This is a <strong>fiction‑only</strong> creative project. 
-        No merchandise, services, physical goods, or real‑world assistance are offered or implied. 
-        Your support goes directly toward the time and tools used to write and publish these stories.
-      </div>
+        <div class="action-row">
+          <button class="btn-primary" id="openConfirmBtn">
+            ☕ Support &nbsp;→&nbsp; Confirm Fiction Terms
+          </button>
+          <button class="btn-secondary" id="readTermsBtn">
+            📄 Read Full Disclaimer
+          </button>
+        </div>
 
-      <!-- Buy Me a Coffee button (original) -->
-      <div class="bmc-wrap">
-        <a href="https://www.buymeacoffee.com/flamezingel" target="_blank" rel="noopener noreferrer">
-          <img 
-            src="https://img.buymeacoffee.com/button-api/?text=!Support my idea!&emoji=😇&slug=flamezingel&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" 
-            alt="Support my idea on Buy Me a Coffee"
-          />
-        </a>
+        <p style="margin-top:1.5rem;font-size:0.82rem;color:var(--text-secondary);line-height:1.5;" id="smallPrint">
+          By clicking the support button, you will be asked to confirm that you understand
+          all content is fictional and that no goods or services are exchanged.
+        </p>
       </div>
-
-      <div class="action-row">
-        <button class="btn-primary" id="openConfirmBtn">
-          ☕ Support &nbsp;→&nbsp; Confirm Fiction Terms
-        </button>
-        <button class="btn-secondary" id="readTermsBtn">
-          📄 Read Full Disclaimer
-        </button>
-      </div>
-
-      <p style="margin-top:1.5rem;font-size:0.82rem;color:var(--text-secondary);line-height:1.5;">
-        By clicking the support button, you will be asked to confirm that you understand 
-        all content is fictional and that no goods or services are exchanged.
-      </p>
     </div>
-  </div>
 
-  <!-- footer -->
-  <div class="container" style="margin-top:auto;">
-    <div class="footer-note">
-      <p>
-        © 2025–2026 <strong>Storyteller's Support</strong> · All stories and universes are works of fiction.
-        No real persons, organisations, or events are represented.
-      </p>
-      <p style="margin-top:0.6rem;">
-        This page is a creative project. 
-        <a href="#" id="footerTermsLink">Read the full fiction disclaimer</a>.
-      </p>
+    <div class="container" style="margin-top:auto;">
+      <div class="footer-note">
+        <p id="footerLine1">
+          © 2025–2026 <strong>Support the UPL Project</strong> · All stories and universes are works of fiction.
+          No real persons, organisations, or events are represented.
+        </p>
+        <p style="margin-top:0.6rem;" id="footerLine2">
+          This page is a creative project.
+          <a href="#" id="footerTermsLink">Read the full fiction disclaimer</a>.
+        </p>
+      </div>
     </div>
-  </div>
+  </main>
 
   <div class="band" style="margin-top:0;"></div>
 
-  <!-- ===== CONFIRMATION MODAL ===== -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
-      <h2>Fiction Confirmation</h2>
-      <p class="legal-sub">
+      <h2 id="confirmModalTitle">Fiction Confirmation</h2>
+      <p class="legal-sub" id="confirmModalSub">
         Please read and agree before proceeding to support the work.
       </p>
 
-      <div class="legal-text">
+      <div class="legal-text" id="confirmLegalText">
         <p>
-          <strong>1. Fictional Nature of All Content.</strong> 
-          All websites, stories, characters, organisations, events, and scenarios created by 
-          the author (collectively, the “Works”) are <strong>entirely fictional</strong>. 
-          They are products of imagination and creative expression. Any resemblance to actual 
-          persons, living or dead, or actual events, organisations, or locations is purely 
+          <strong>1. Fictional Nature of All Content.</strong>
+          All websites, stories, characters, organisations, events, and scenarios created by
+          the author (collectively, the “Works”) are <strong>entirely fictional</strong>.
+          They are products of imagination and creative expression. Any resemblance to actual
+          persons, living or dead, or actual events, organisations, or locations is purely
           coincidental and unintentional.
         </p>
 
         <p>
-          <strong>2. No Real‑World Goods or Services.</strong> 
-          The Works are provided for entertainment and reading purposes only. 
-          <strong>No merchandise, physical products, services, assistance, or any form of 
-          real‑world exchange</strong> is offered, sold, promised, or implied through this 
+          <strong>2. No Real‑World Goods or Services.</strong>
+          The Works are provided for entertainment and reading purposes only.
+          <strong>No merchandise, physical products, services, assistance, or any form of
+          real‑world exchange</strong> is offered, sold, promised, or implied through this
           support page, the Works, or any related platform.
         </p>
 
         <div class="highlight">
-          <strong>3. Voluntary Support Only.</strong> Any financial contribution made via 
-          third‑party platforms (e.g., Buy Me a Coffee) is a <strong>voluntary gift</strong> 
-          to the author. It does not constitute a purchase, subscription, contract, or 
-          expectation of any deliverable. Supporters receive no goods, services, perks, 
+          <strong>3. Voluntary Support Only.</strong> Any financial contribution made via
+          third‑party platforms (e.g., Buy Me a Coffee) is a <strong>voluntary gift</strong>
+          to the author. It does not constitute a purchase, subscription, contract, or
+          expectation of any deliverable. Supporters receive no goods, services, perks,
           or special treatment in return.
         </div>
 
         <p>
-          <strong>4. No Reliance.</strong> You acknowledge that you are not relying on any 
-          representation, promise, or expectation of receiving anything in exchange for your 
-          support. You are supporting the <strong>creative effort</strong> of writing and 
+          <strong>4. No Reliance.</strong> You acknowledge that you are not relying on any
+          representation, promise, or expectation of receiving anything in exchange for your
+          support. You are supporting the <strong>creative effort</strong> of writing and
           maintaining these fictional works.
         </p>
 
         <p>
-          <strong>5. Limitation of Liability.</strong> To the fullest extent permitted by law, 
-          the author shall not be liable for any claim, damage, or loss arising from your 
+          <strong>5. Limitation of Liability.</strong> To the fullest extent permitted by law,
+          the author shall not be liable for any claim, damage, or loss arising from your
           support or from any misunderstanding regarding the fictional nature of the Works.
         </p>
 
         <p>
-          <strong>6. Acknowledgment.</strong> By ticking the box below and proceeding, you 
+          <strong>6. Acknowledgment.</strong> By ticking the box below and proceeding, you
           confirm that you:
         </p>
         <ul>
@@ -645,9 +952,9 @@
 
       <div class="checkbox-row" id="agreeRow">
         <input type="checkbox" id="agreeCheckbox">
-        <label for="agreeCheckbox">
-          <strong>I agree</strong> — I understand that all works are fictional, 
-          that no goods or services are provided, and that my support is a voluntary gift 
+        <label for="agreeCheckbox" id="agreeLabel">
+          <strong>I agree</strong> — I understand that all works are fictional,
+          that no goods or services are provided, and that my support is a voluntary gift
           with no expectation of anything in return.
         </label>
       </div>
@@ -661,54 +968,53 @@
     </div>
   </div>
 
-  <!-- ===== FULL DISCLAIMER MODAL (same content, no checkbox) ===== -->
   <div class="modal-overlay" id="termsModal">
     <div class="modal-box">
-      <h2>Fiction Disclaimer</h2>
-      <p class="legal-sub">Full terms regarding the fictional nature of all works.</p>
+      <h2 id="termsModalTitle">Fiction Disclaimer</h2>
+      <p class="legal-sub" id="termsModalSub">Full terms regarding the fictional nature of all works.</p>
 
-      <div class="legal-text">
+      <div class="legal-text" id="termsLegalText">
         <p>
-          <strong>1. Fictional Nature of All Content.</strong> 
-          All websites, stories, characters, organisations, events, and scenarios created by 
-          the author (collectively, the “Works”) are <strong>entirely fictional</strong>. 
-          They are products of imagination and creative expression. Any resemblance to actual 
-          persons, living or dead, or actual events, organisations, or locations is purely 
+          <strong>1. Fictional Nature of All Content.</strong>
+          All websites, stories, characters, organisations, events, and scenarios created by
+          the author (collectively, the “Works”) are <strong>entirely fictional</strong>.
+          They are products of imagination and creative expression. Any resemblance to actual
+          persons, living or dead, or actual events, organisations, or locations is purely
           coincidental and unintentional.
         </p>
 
         <p>
-          <strong>2. No Real‑World Goods or Services.</strong> 
-          The Works are provided for entertainment and reading purposes only. 
-          <strong>No merchandise, physical products, services, assistance, or any form of 
-          real‑world exchange</strong> is offered, sold, promised, or implied through this 
+          <strong>2. No Real‑World Goods or Services.</strong>
+          The Works are provided for entertainment and reading purposes only.
+          <strong>No merchandise, physical products, services, assistance, or any form of
+          real‑world exchange</strong> is offered, sold, promised, or implied through this
           support page, the Works, or any related platform.
         </p>
 
         <div class="highlight">
-          <strong>3. Voluntary Support Only.</strong> Any financial contribution made via 
-          third‑party platforms (e.g., Buy Me a Coffee) is a <strong>voluntary gift</strong> 
-          to the author. It does not constitute a purchase, subscription, contract, or 
-          expectation of any deliverable. Supporters receive no goods, services, perks, 
+          <strong>3. Voluntary Support Only.</strong> Any financial contribution made via
+          third‑party platforms (e.g., Buy Me a Coffee) is a <strong>voluntary gift</strong>
+          to the author. It does not constitute a purchase, subscription, contract, or
+          expectation of any deliverable. Supporters receive no goods, services, perks,
           or special treatment in return.
         </div>
 
         <p>
-          <strong>4. No Reliance.</strong> You acknowledge that you are not relying on any 
-          representation, promise, or expectation of receiving anything in exchange for your 
-          support. You are supporting the <strong>creative effort</strong> of writing and 
+          <strong>4. No Reliance.</strong> You acknowledge that you are not relying on any
+          representation, promise, or expectation of receiving anything in exchange for your
+          support. You are supporting the <strong>creative effort</strong> of writing and
           maintaining these fictional works.
         </p>
 
         <p>
-          <strong>5. Limitation of Liability.</strong> To the fullest extent permitted by law, 
-          the author shall not be liable for any claim, damage, or loss arising from your 
+          <strong>5. Limitation of Liability.</strong> To the fullest extent permitted by law,
+          the author shall not be liable for any claim, damage, or loss arising from your
           support or from any misunderstanding regarding the fictional nature of the Works.
         </p>
 
         <p>
-          <strong>6. Acknowledgment.</strong> By proceeding to support, you confirm that you 
-          have read and understood this disclaimer and that you do not expect any merchandise, 
+          <strong>6. Acknowledgment.</strong> By proceeding to support, you confirm that you
+          have read and understood this disclaimer and that you do not expect any merchandise,
           service, or tangible benefit.
         </p>
 
@@ -723,105 +1029,903 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="langModal">
+    <div class="modal-box">
+      <h2 id="langModalTitle">Select Language</h2>
+      <div class="lang-grid" id="langGrid"></div>
+      <div class="modal-actions">
+        <button class="btn-small btn-cancel" id="closeLangModal">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function() {
       'use strict';
 
-      const confirmModal = document.getElementById('confirmModal');
-      const termsModal = document.getElementById('termsModal');
-      const agreeCheckbox = document.getElementById('agreeCheckbox');
-      const confirmBtn = document.getElementById('confirmProceedBtn');
-      const openConfirmBtn = document.getElementById('openConfirmBtn');
-      const readTermsBtn = document.getElementById('readTermsBtn');
-      const cancelModalBtn = document.getElementById('cancelModalBtn');
-      const closeTermsBtn = document.getElementById('closeTermsBtn');
-      const footerTermsLink = document.getElementById('footerTermsLink');
+      var translations = {
+        en: {
+          brand: 'Support the UPL project',
+          fictionNote: '<strong>All works are fictional.</strong> No real persons, places, or events are depicted. This is a creative writing project.',
+          title: 'Support the <span class="upl-shine">UPL</span> Project',
+          subhead: 'Every universe, every character, every twist — crafted with care and a lot of coffee. If you enjoy the worlds I build, you can help keep the ink flowing.',
+          card1Title: 'Multiple Universes',
+          card1Desc: 'From procedurals to speculative fiction — interconnected but each standing alone.',
+          card2Title: 'Original Fiction',
+          card2Desc: 'Every story is an original work of imagination. Nothing is based on real events.',
+          card3Title: 'Free to Read',
+          card3Desc: 'All stories remain free. Support is optional and never required to enjoy the work.',
+          disclaimerBanner: '<strong>⚠️ Important:</strong> This is a <strong>fiction‑only</strong> creative project. No merchandise, services, physical goods, or real‑world assistance are offered or implied. Your support goes directly toward the time and tools used to write and publish these stories.',
+          openConfirmBtn: '☕ Support &nbsp;→&nbsp; Confirm Fiction Terms',
+          readTermsBtn: '📄 Read Full Disclaimer',
+          smallPrint: 'By clicking the support button, you will be asked to confirm that you understand all content is fictional and that no goods or services are exchanged.',
+          footerLine1: '© 2025–2026 <strong>Support the UPL Project</strong> · All stories and universes are works of fiction. No real persons, organisations, or events are represented.',
+          footerLine2: 'This page is a creative project. <a href="#" id="footerTermsLink">Read the full fiction disclaimer</a>.',
+          confirmModalTitle: 'Fiction Confirmation',
+          confirmModalSub: 'Please read and agree before proceeding to support the work.',
+          agreeLabel: '<strong>I agree</strong> — I understand that all works are fictional, that no goods or services are provided, and that my support is a voluntary gift with no expectation of anything in return.',
+          cancelModalBtn: 'Cancel',
+          confirmProceedBtn: 'Proceed to Support',
+          termsModalTitle: 'Fiction Disclaimer',
+          termsModalSub: 'Full terms regarding the fictional nature of all works.',
+          closeTermsBtn: 'Close',
+          langModalTitle: 'Select Language',
+          closeLangModal: 'Close',
+          contrastLabel: 'Contrast',
+          grayscaleLabel: 'Grayscale',
+          saturateLabel: 'Saturate',
+          crosshairLabel: 'Crosshair Color',
+          cursorEnableLabel: 'Enable Crosshair Assist',
+          resetAccBtn: 'Reset',
+          translateBanner: 'It looks like your language may not be fully supported here. Would you like to use Google Translate to read this page in your language?',
+          translateWarning: '⚠️ Machine translation may be inaccurate. Please always double-check important information.',
+          translateYes: 'Yes, translate',
+          translateNo: 'No, thanks'
+        },
+        'zh-Hans': {
+          brand: '支持 UPL 项目',
+          fictionNote: '<strong>所有作品均为虚构。</strong>未描绘任何真实人物、地点或事件。这是一个创意写作项目。',
+          title: '支持 <span class="upl-shine">UPL</span> 项目',
+          subhead: '每一个宇宙、每一个角色、每一个转折——都用心打磨，配上一杯又一杯的咖啡。如果你喜欢我构建的世界，可以帮我让墨水继续流淌。',
+          card1Title: '多元宇宙',
+          card1Desc: '从刑侦到思辨小说——彼此关联，又各自独立。',
+          card2Title: '原创虚构',
+          card2Desc: '每个故事都是想象的原创作品，不基于任何真实事件。',
+          card3Title: '免费阅读',
+          card3Desc: '所有故事永久免费。支持完全自愿，绝非享受作品的前提。',
+          disclaimerBanner: '<strong>⚠️ 重要：</strong>这是一个<strong>纯虚构</strong>创意项目。不提供也不暗示任何商品、服务、实物或现实援助。你的支持将直接用于写作和发布这些故事所需的时间与工具。',
+          openConfirmBtn: '☕ 支持 &nbsp;→&nbsp; 确认虚构条款',
+          readTermsBtn: '📄 阅读完整免责声明',
+          smallPrint: '点击支持按钮后，系统会要求你确认：你理解所有内容均为虚构，且不涉及任何商品或服务交换。',
+          footerLine1: '© 2025–2026 <strong>支持 UPL 项目</strong> · 所有故事和宇宙均为虚构作品。不涉及任何真实人物、组织或事件。',
+          footerLine2: '本页面为创意项目。<a href="#" id="footerTermsLink">阅读完整虚构免责声明</a>。',
+          confirmModalTitle: '虚构确认',
+          confirmModalSub: '在继续支持之前，请阅读并同意以下内容。',
+          agreeLabel: '<strong>我同意</strong>——我理解所有作品均为虚构，不提供任何商品或服务，我的支持是自愿赠予，不期待任何回报。',
+          cancelModalBtn: '取消',
+          confirmProceedBtn: '继续支持',
+          termsModalTitle: '虚构免责声明',
+          termsModalSub: '关于所有作品虚构性质的完整条款。',
+          closeTermsBtn: '关闭',
+          langModalTitle: '选择语言',
+          closeLangModal: '关闭',
+          contrastLabel: '对比度',
+          grayscaleLabel: '灰度',
+          saturateLabel: '饱和度',
+          crosshairLabel: '准星颜色',
+          cursorEnableLabel: '启用高亮十字准星',
+          resetAccBtn: '重置',
+          translateBanner: '您所使用的语言在此可能未获得完整支持。是否使用 Google 翻译以您的语言阅读本页？',
+          translateWarning: '⚠️ 机器翻译可能不准确，请务必核对重要信息。',
+          translateYes: '是，翻译',
+          translateNo: '不用了'
+        },
+        'zh-Hant': {
+          brand: '支持 UPL 專案',
+          fictionNote: '<strong>所有作品均為虛構。</strong>未描繪任何真實人物、地點或事件。這是一個創意寫作專案。',
+          title: '支持 <span class="upl-shine">UPL</span> 專案',
+          subhead: '每一個宇宙、每一個角色、每一個轉折——都用心打磨，配上一杯又一杯的咖啡。如果你喜歡我構建的世界，可以幫我讓墨水繼續流淌。',
+          card1Title: '多元宇宙',
+          card1Desc: '從刑偵到思辨小說——彼此關聯，又各自獨立。',
+          card2Title: '原創虛構',
+          card2Desc: '每個故事都是想像的原創作品，不基於任何真實事件。',
+          card3Title: '免費閱讀',
+          card3Desc: '所有故事永久免費。支持完全自願，絕非享受作品的前提。',
+          disclaimerBanner: '<strong>⚠️ 重要：</strong>這是一個<strong>純虛構</strong>創意專案。不提供也不暗示任何商品、服務、實物或現實援助。你的支持將直接用於寫作和發布這些故事所需的時間與工具。',
+          openConfirmBtn: '☕ 支持 &nbsp;→&nbsp; 確認虛構條款',
+          readTermsBtn: '📄 閱讀完整免責聲明',
+          smallPrint: '點擊支持按鈕後，系統會要求你確認：你理解所有內容均為虛構，且不涉及任何商品或服務交換。',
+          footerLine1: '© 2025–2026 <strong>支持 UPL 專案</strong> · 所有故事和宇宙均為虛構作品。不涉及任何真實人物、組織或事件。',
+          footerLine2: '本頁面為創意專案。<a href="#" id="footerTermsLink">閱讀完整虛構免責聲明</a>。',
+          confirmModalTitle: '虛構確認',
+          confirmModalSub: '在繼續支持之前，請閱讀並同意以下內容。',
+          agreeLabel: '<strong>我同意</strong>——我理解所有作品均為虛構，不提供任何商品或服務，我的支持是自願贈予，不期待任何回報。',
+          cancelModalBtn: '取消',
+          confirmProceedBtn: '繼續支持',
+          termsModalTitle: '虛構免責聲明',
+          termsModalSub: '關於所有作品虛構性質的完整條款。',
+          closeTermsBtn: '關閉',
+          langModalTitle: '選擇語言',
+          closeLangModal: '關閉',
+          contrastLabel: '對比度',
+          grayscaleLabel: '灰階',
+          saturateLabel: '飽和度',
+          crosshairLabel: '準星顏色',
+          cursorEnableLabel: '啟用高亮十字準星',
+          resetAccBtn: '重設',
+          translateBanner: '您所使用的語言在此可能未獲得完整支援。是否使用 Google 翻譯以您的語言閱讀本頁？',
+          translateWarning: '⚠️ 機器翻譯可能不準確，請務必核對重要資訊。',
+          translateYes: '是，翻譯',
+          translateNo: '不用了'
+        },
+        lzh: {
+          brand: '助 UPL 之業',
+          fictionNote: '<strong>諸作皆虛。</strong>不繪真人、真地、真事。此乃文藝創作之業。',
+          title: '助 <span class="upl-shine">UPL</span> 之業',
+          subhead: '每一宇宙、每一人物、每一轉折——皆以匠心琢磨，佐以咖啡數杯。君若喜吾所構之世界，可助吾續其墨。',
+          card1Title: '諸界並立',
+          card1Desc: '自刑偵至玄想——彼此相連，又各自獨立。',
+          card2Title: '原創虛構',
+          card2Desc: '每一故事皆想像之原創，不基於任何真事。',
+          card3Title: '免費閱讀',
+          card3Desc: '諸故事永久免費。相助全憑自願，絕非閱讀之前提。',
+          disclaimerBanner: '<strong>⚠️ 要者：</strong>此乃<strong>純虛構</strong>之文藝創作。不供亦不示任何商品、服務、實物或現實之助。君之相助，逕用於寫作與發布所需之時與器。',
+          openConfirmBtn: '☕ 相助 &nbsp;→&nbsp; 確認虛構之條',
+          readTermsBtn: '📄 閱全文之免責',
+          smallPrint: '既按相助之鈕，當確認：君知諸文皆虛，且不涉任何商品或服務之交換。',
+          footerLine1: '© 2025–2026 <strong>助 UPL 之業</strong> · 諸故事與宇宙皆虛構之作。不涉真人、真事、真組織。',
+          footerLine2: '此頁乃文藝之業。<a href="#" id="footerTermsLink">閱全文之虛構免責</a>。',
+          confirmModalTitle: '虛構之確認',
+          confirmModalSub: '續助之前，請閱而允之。',
+          agreeLabel: '<strong>吾允之</strong>——吾知諸作皆虛，不供任何商品或服務，吾之相助乃自願之贈，不望任何回報。',
+          cancelModalBtn: '止',
+          confirmProceedBtn: '續助',
+          termsModalTitle: '虛構之免責',
+          termsModalSub: '關於諸作虛構性質之全文條款。',
+          closeTermsBtn: '閉',
+          langModalTitle: '擇語',
+          closeLangModal: '閉',
+          contrastLabel: '對比',
+          grayscaleLabel: '灰度',
+          saturateLabel: '飽和',
+          crosshairLabel: '準星之色',
+          cursorEnableLabel: '啟高亮十字準星',
+          resetAccBtn: '復原',
+          translateBanner: '君所用之語，於此恐未盡得支持。欲以 Google 翻譯閱此頁乎？',
+          translateWarning: '⚠️ 機器翻譯或有不確，緊要之處務請覆核。',
+          translateYes: '然，譯之',
+          translateNo: '不必'
+        },
+        'zh-Classical': {
+          brand: '助 UPL 之業',
+          fictionNote: '<strong>諸作皆虛。</strong>不繪真人、真地、真事。此乃文藝創作之業。',
+          title: '助 <span class="upl-shine">UPL</span> 之業',
+          subhead: '每一宇宙、每一人物、每一轉折——皆以匠心琢磨，佐以咖啡數杯。君若喜吾所構之世界，可助吾續其墨。',
+          card1Title: '諸界並立',
+          card1Desc: '自刑偵至玄想——彼此相連，又各自獨立。',
+          card2Title: '原創虛構',
+          card2Desc: '每一故事皆想像之原創，不基於任何真事。',
+          card3Title: '免費閱讀',
+          card3Desc: '諸故事永久免費。相助全憑自願，絕非閱讀之前提。',
+          disclaimerBanner: '<strong>⚠️ 要者：</strong>此乃<strong>純虛構</strong>之文藝創作。不供亦不示任何商品、服務、實物或現實之助。君之相助，逕用於寫作與發布所需之時與器。',
+          openConfirmBtn: '☕ 相助 &nbsp;→&nbsp; 確認虛構之條',
+          readTermsBtn: '📄 閱全文之免責',
+          smallPrint: '既按相助之鈕，當確認：君知諸文皆虛，且不涉任何商品或服務之交換。',
+          footerLine1: '© 2025–2026 <strong>助 UPL 之業</strong> · 諸故事與宇宙皆虛構之作。不涉真人、真事、真組織。',
+          footerLine2: '此頁乃文藝之業。<a href="#" id="footerTermsLink">閱全文之虛構免責</a>。',
+          confirmModalTitle: '虛構之確認',
+          confirmModalSub: '續助之前，請閱而允之。',
+          agreeLabel: '<strong>吾允之</strong>——吾知諸作皆虛，不供任何商品或服務，吾之相助乃自願之贈，不望任何回報。',
+          cancelModalBtn: '止',
+          confirmProceedBtn: '續助',
+          termsModalTitle: '虛構之免責',
+          termsModalSub: '關於諸作虛構性質之全文條款。',
+          closeTermsBtn: '閉',
+          langModalTitle: '擇語',
+          closeLangModal: '閉',
+          contrastLabel: '對比',
+          grayscaleLabel: '灰度',
+          saturateLabel: '飽和',
+          crosshairLabel: '準星之色',
+          cursorEnableLabel: '啟高亮十字準星',
+          resetAccBtn: '復原',
+          translateBanner: '君所用之語，於此恐未盡得支持。欲以 Google 翻譯閱此頁乎？',
+          translateWarning: '⚠️ 機器翻譯或有不確，緊要之處務請覆核。',
+          translateYes: '然，譯之',
+          translateNo: '不必'
+        },
+        es: {
+          brand: 'Apoya el proyecto UPL',
+          fictionNote: '<strong>Todas las obras son ficción.</strong> No se representan personas, lugares ni eventos reales. Este es un proyecto de escritura creativa.',
+          title: 'Apoya el Proyecto <span class="upl-shine">UPL</span>',
+          subhead: 'Cada universo, cada personaje, cada giro — elaborado con cuidado y mucho café. Si disfrutas de los mundos que construyo, puedes ayudar a que la tinta siga fluyendo.',
+          card1Title: 'Múltiples Universos',
+          card1Desc: 'Desde procedimentales hasta ficción especulativa — interconectados pero cada uno independiente.',
+          card2Title: 'Ficción Original',
+          card2Desc: 'Cada historia es una obra original de imaginación. Nada se basa en eventos reales.',
+          card3Title: 'Gratis para Leer',
+          card3Desc: 'Todas las historias siguen siendo gratuitas. El apoyo es opcional y nunca necesario para disfrutar de la obra.',
+          disclaimerBanner: '<strong>⚠️ Importante:</strong> Este es un proyecto creativo <strong>solo de ficción</strong>. No se ofrecen ni implican mercancías, servicios, bienes físicos ni asistencia del mundo real. Tu apoyo va directamente al tiempo y las herramientas utilizadas para escribir y publicar estas historias.',
+          openConfirmBtn: '☕ Apoyar &nbsp;→&nbsp; Confirmar Términos de Ficción',
+          readTermsBtn: '📄 Leer Descargo Completo',
+          smallPrint: 'Al hacer clic en el botón de apoyo, se te pedirá que confirmes que entiendes que todo el contenido es ficción y que no se intercambian bienes ni servicios.',
+          footerLine1: '© 2025–2026 <strong>Apoya el Proyecto UPL</strong> · Todas las historias y universos son obras de ficción. No se representan personas, organizaciones ni eventos reales.',
+          footerLine2: 'Esta página es un proyecto creativo. <a href="#" id="footerTermsLink">Lee el descargo de ficción completo</a>.',
+          confirmModalTitle: 'Confirmación de Ficción',
+          confirmModalSub: 'Por favor, lee y acepta antes de continuar para apoyar la obra.',
+          agreeLabel: '<strong>Estoy de acuerdo</strong> — Entiendo que todas las obras son ficción, que no se proporcionan bienes ni servicios, y que mi apoyo es un regalo voluntario sin expectativa de nada a cambio.',
+          cancelModalBtn: 'Cancelar',
+          confirmProceedBtn: 'Proceder al Apoyo',
+          termsModalTitle: 'Descargo de Ficción',
+          termsModalSub: 'Términos completos sobre la naturaleza ficticia de todas las obras.',
+          closeTermsBtn: 'Cerrar',
+          langModalTitle: 'Seleccionar Idioma',
+          closeLangModal: 'Cerrar',
+          contrastLabel: 'Contraste',
+          grayscaleLabel: 'Escala de grises',
+          saturateLabel: 'Saturación',
+          crosshairLabel: 'Color de mira',
+          cursorEnableLabel: 'Activar asistencia de mira',
+          resetAccBtn: 'Restablecer',
+          translateBanner: 'Parece que tu idioma podría no estar completamente soportado aquí. ¿Te gustaría usar Google Translate para leer esta página en tu idioma?',
+          translateWarning: '⚠️ La traducción automática puede ser inexacta. Verifica siempre la información importante.',
+          translateYes: 'Sí, traducir',
+          translateNo: 'No, gracias'
+        },
+        de: {
+          brand: 'Unterstütze das UPL-Projekt',
+          fictionNote: '<strong>Alle Werke sind Fiktion.</strong> Es werden keine realen Personen, Orte oder Ereignisse dargestellt. Dies ist ein kreatives Schreibprojekt.',
+          title: 'Unterstütze das <span class="upl-shine">UPL</span>-Projekt',
+          subhead: 'Jedes Universum, jede Figur, jede Wendung — mit Sorgfalt und viel Kaffee gefertigt. Wenn dir die Welten gefallen, die ich erschaffe, kannst du helfen, die Tinte fließen zu lassen.',
+          card1Title: 'Multiversen',
+          card1Desc: 'Von Krimis bis zu spekulativer Fiktion — miteinander verbunden, doch jede steht für sich.',
+          card2Title: 'Originalfiktion',
+          card2Desc: 'Jede Geschichte ist ein originelles Werk der Fantasie. Nichts basiert auf realen Ereignissen.',
+          card3Title: 'Kostenlos lesen',
+          card3Desc: 'Alle Geschichten bleiben kostenlos. Unterstützung ist optional und nie Voraussetzung, um die Werke zu genießen.',
+          disclaimerBanner: '<strong>⚠️ Wichtig:</strong> Dies ist ein <strong>reines Fiktions</strong>-Kreativprojekt. Es werden keine Waren, Dienstleistungen, physischen Güter oder reale Hilfe angeboten oder angedeutet. Deine Unterstützung fließt direkt in die Zeit und Werkzeuge, die zum Schreiben und Veröffentlichen dieser Geschichten benötigt werden.',
+          openConfirmBtn: '☕ Unterstützen &nbsp;→&nbsp; Fiktionsbedingungen bestätigen',
+          readTermsBtn: '📄 Vollständigen Haftungsausschluss lesen',
+          smallPrint: 'Wenn du auf die Unterstützen-Schaltfläche klickst, wirst du gebeten zu bestätigen, dass du verstehst, dass alle Inhalte Fiktion sind und keine Waren oder Dienstleistungen ausgetauscht werden.',
+          footerLine1: '© 2025–2026 <strong>Unterstütze das UPL-Projekt</strong> · Alle Geschichten und Universen sind fiktionale Werke. Es werden keine realen Personen, Organisationen oder Ereignisse dargestellt.',
+          footerLine2: 'Diese Seite ist ein Kreativprojekt. <a href="#" id="footerTermsLink">Lies den vollständigen Fiktions-Haftungsausschluss</a>.',
+          confirmModalTitle: 'Fiktionsbestätigung',
+          confirmModalSub: 'Bitte lies und stimme zu, bevor du fortfährst, um das Werk zu unterstützen.',
+          agreeLabel: '<strong>Ich stimme zu</strong> — Ich verstehe, dass alle Werke Fiktion sind, dass keine Waren oder Dienstleistungen bereitgestellt werden und dass meine Unterstützung ein freiwilliges Geschenk ohne Erwartung einer Gegenleistung ist.',
+          cancelModalBtn: 'Abbrechen',
+          confirmProceedBtn: 'Zur Unterstützung fortfahren',
+          termsModalTitle: 'Fiktions-Haftungsausschluss',
+          termsModalSub: 'Vollständige Bedingungen zur fiktionalen Natur aller Werke.',
+          closeTermsBtn: 'Schließen',
+          langModalTitle: 'Sprache auswählen',
+          closeLangModal: 'Schließen',
+          contrastLabel: 'Kontrast',
+          grayscaleLabel: 'Graustufen',
+          saturateLabel: 'Sättigung',
+          crosshairLabel: 'Fadenkreuzfarbe',
+          cursorEnableLabel: 'Fadenkreuz-Assistent aktivieren',
+          resetAccBtn: 'Zurücksetzen',
+          translateBanner: 'Es sieht so aus, als ob deine Sprache hier möglicherweise nicht vollständig unterstützt wird. Möchtest du Google Translate verwenden, um diese Seite in deiner Sprache zu lesen?',
+          translateWarning: '⚠️ Maschinelle Übersetzung kann ungenau sein. Bitte überprüfe wichtige Informationen immer.',
+          translateYes: 'Ja, übersetzen',
+          translateNo: 'Nein, danke'
+        },
+        pt: {
+          brand: 'Apoie o projeto UPL',
+          fictionNote: '<strong>Todas as obras são ficção.</strong> Nenhuma pessoa, lugar ou evento real é representado. Este é um projeto de escrita criativa.',
+          title: 'Apoie o Projeto <span class="upl-shine">UPL</span>',
+          subhead: 'Cada universo, cada personagem, cada reviravolta — elaborado com cuidado e muito café. Se você gosta dos mundos que eu construo, pode ajudar a manter a tinta fluindo.',
+          card1Title: 'Múltiplos Universos',
+          card1Desc: 'De procedurais a ficção especulativa — interligados, mas cada um independente.',
+          card2Title: 'Ficção Original',
+          card2Desc: 'Cada história é uma obra original de imaginação. Nada é baseado em eventos reais.',
+          card3Title: 'Grátis para Ler',
+          card3Desc: 'Todas as histórias permanecem gratuitas. O apoio é opcional e nunca necessário para desfrutar da obra.',
+          disclaimerBanner: '<strong>⚠️ Importante:</strong> Este é um projeto criativo <strong>apenas de ficção</strong>. Nenhuma mercadoria, serviço, bem físico ou assistência do mundo real é oferecida ou implícita. Seu apoio vai diretamente para o tempo e as ferramentas usadas para escrever e publicar essas histórias.',
+          openConfirmBtn: '☕ Apoiar &nbsp;→&nbsp; Confirmar Termos de Ficção',
+          readTermsBtn: '📄 Ler Isenção Completa',
+          smallPrint: 'Ao clicar no botão de apoio, será solicitado que você confirme que entende que todo o conteúdo é ficção e que nenhum bem ou serviço é trocado.',
+          footerLine1: '© 2025–2026 <strong>Apoie o Projeto UPL</strong> · Todas as histórias e universos são obras de ficção. Nenhuma pessoa, organização ou evento real é representado.',
+          footerLine2: 'Esta página é um projeto criativo. <a href="#" id="footerTermsLink">Leia a isenção de ficção completa</a>.',
+          confirmModalTitle: 'Confirmação de Ficção',
+          confirmModalSub: 'Por favor, leia e concorde antes de prosseguir para apoiar a obra.',
+          agreeLabel: '<strong>Eu concordo</strong> — Entendo que todas as obras são ficção, que nenhum bem ou serviço é fornecido, e que meu apoio é um presente voluntário sem expectativa de nada em troca.',
+          cancelModalBtn: 'Cancelar',
+          confirmProceedBtn: 'Prosseguir para o Apoio',
+          termsModalTitle: 'Isenção de Ficção',
+          termsModalSub: 'Termos completos sobre a natureza fictícia de todas as obras.',
+          closeTermsBtn: 'Fechar',
+          langModalTitle: 'Selecionar Idioma',
+          closeLangModal: 'Fechar',
+          contrastLabel: 'Contraste',
+          grayscaleLabel: 'Escala de cinzas',
+          saturateLabel: 'Saturação',
+          crosshairLabel: 'Cor da mira',
+          cursorEnableLabel: 'Ativar assistência de mira',
+          resetAccBtn: 'Repor',
+          translateBanner: 'Parece que o seu idioma pode não ser totalmente suportado aqui. Gostaria de usar o Google Translate para ler esta página no seu idioma?',
+          translateWarning: '⚠️ A tradução automática pode ser imprecisa. Verifique sempre as informações importantes.',
+          translateYes: 'Sim, traduzir',
+          translateNo: 'Não, obrigado'
+        },
+        fr: {
+          brand: 'Soutenir le projet UPL',
+          fictionNote: '<strong>Toutes les œuvres sont fictives.</strong> Aucune personne, lieu ou événement réel n\'est représenté. Il s\'agit d\'un projet d\'écriture créative.',
+          title: 'Soutenir le Projet <span class="upl-shine">UPL</span>',
+          subhead: 'Chaque univers, chaque personnage, chaque rebondissement — élaboré avec soin et beaucoup de café. Si vous aimez les mondes que je construis, vous pouvez aider à faire couler l\'encre.',
+          card1Title: 'Univers Multiples',
+          card1Desc: 'Des procéduraux à la fiction spéculative — interconnectés mais chacun indépendant.',
+          card2Title: 'Fiction Originale',
+          card2Desc: 'Chaque histoire est une œuvre originale de l\'imagination. Rien n\'est basé sur des événements réels.',
+          card3Title: 'Gratuit à Lire',
+          card3Desc: 'Toutes les histoires restent gratuites. Le soutien est facultatif et jamais nécessaire pour profiter de l\'œuvre.',
+          disclaimerBanner: '<strong>⚠️ Important :</strong> Il s\'agit d\'un projet créatif <strong>uniquement fictif</strong>. Aucune marchandise, service, bien physique ou assistance réelle n\'est offert ou impliqué. Votre soutien va directement au temps et aux outils utilisés pour écrire et publier ces histoires.',
+          openConfirmBtn: '☕ Soutenir &nbsp;→&nbsp; Confirmer les Termes de Fiction',
+          readTermsBtn: '📄 Lire l\'Avertissement Complet',
+          smallPrint: 'En cliquant sur le bouton de soutien, il vous sera demandé de confirmer que vous comprenez que tout le contenu est fictif et qu\'aucun bien ou service n\'est échangé.',
+          footerLine1: '© 2025–2026 <strong>Soutenir le Projet UPL</strong> · Toutes les histoires et univers sont des œuvres de fiction. Aucune personne, organisation ou événement réel n\'est représenté.',
+          footerLine2: 'Cette page est un projet créatif. <a href="#" id="footerTermsLink">Lisez l\'avertissement de fiction complet</a>.',
+          confirmModalTitle: 'Confirmation de Fiction',
+          confirmModalSub: 'Veuillez lire et accepter avant de continuer à soutenir l\'œuvre.',
+          agreeLabel: '<strong>J\'accepte</strong> — Je comprends que toutes les œuvres sont fictives, qu\'aucun bien ou service n\'est fourni, et que mon soutien est un don volontaire sans attente de quoi que ce soit en retour.',
+          cancelModalBtn: 'Annuler',
+          confirmProceedBtn: 'Procéder au Soutien',
+          termsModalTitle: 'Avertissement de Fiction',
+          termsModalSub: 'Termes complets concernant la nature fictive de toutes les œuvres.',
+          closeTermsBtn: 'Fermer',
+          langModalTitle: 'Choisir la Langue',
+          closeLangModal: 'Fermer',
+          contrastLabel: 'Contraste',
+          grayscaleLabel: 'Niveaux de gris',
+          saturateLabel: 'Saturation',
+          crosshairLabel: 'Couleur du viseur',
+          cursorEnableLabel: 'Activer l\'assistance du viseur',
+          resetAccBtn: 'Réinitialiser',
+          translateBanner: 'Il semble que votre langue ne soit pas entièrement prise en charge ici. Souhaitez-vous utiliser Google Translate pour lire cette page dans votre langue ?',
+          translateWarning: '⚠️ La traduction automatique peut être inexacte. Veuillez toujours vérifier les informations importantes.',
+          translateYes: 'Oui, traduire',
+          translateNo: 'Non, merci'
+        },
+        ru: {
+          brand: 'Поддержать проект UPL',
+          fictionNote: '<strong>Все произведения — вымысел.</strong> Не изображаются реальные люди, места или события. Это проект творческого письма.',
+          title: 'Поддержать проект <span class="upl-shine">UPL</span>',
+          subhead: 'Каждая вселенная, каждый персонаж, каждый поворот — созданы с заботой и большим количеством кофе. Если вам нравятся миры, которые я строю, вы можете помочь чернилам течь.',
+          card1Title: 'Множество Вселенных',
+          card1Desc: 'От процедурных драм до спекулятивной фантастики — взаимосвязаны, но каждая самостоятельна.',
+          card2Title: 'Оригинальный Вымысел',
+          card2Desc: 'Каждая история — оригинальное произведение воображения. Ничто не основано на реальных событиях.',
+          card3Title: 'Бесплатно для Чтения',
+          card3Desc: 'Все истории остаются бесплатными. Поддержка необязательна и никогда не требуется для наслаждения произведением.',
+          disclaimerBanner: '<strong>⚠️ Важно:</strong> Это <strong>полностью вымышленный</strong> творческий проект. Никакие товары, услуги, физические продукты или реальная помощь не предлагаются и не подразумеваются. Ваша поддержка идёт напрямую на время и инструменты, используемые для написания и публикации этих историй.',
+          openConfirmBtn: '☕ Поддержать &nbsp;→&nbsp; Подтвердить условия вымысла',
+          readTermsBtn: '📄 Прочитать полный отказ от ответственности',
+          smallPrint: 'Нажав кнопку поддержки, вы должны будете подтвердить, что понимаете: всё содержание является вымыслом, и никакие товары или услуги не обмениваются.',
+          footerLine1: '© 2025–2026 <strong>Поддержать проект UPL</strong> · Все истории и вселенные — вымышленные произведения. Никакие реальные люди, организации или события не представлены.',
+          footerLine2: 'Эта страница — творческий проект. <a href="#" id="footerTermsLink">Прочитайте полный отказ от ответственности о вымысле</a>.',
+          confirmModalTitle: 'Подтверждение вымысла',
+          confirmModalSub: 'Пожалуйста, прочитайте и согласитесь, прежде чем продолжить поддержку работы.',
+          agreeLabel: '<strong>Я согласен</strong> — Я понимаю, что все произведения вымышлены, что никакие товары или услуги не предоставляются, и что моя поддержка — добровольный дар без ожидания чего-либо взамен.',
+          cancelModalBtn: 'Отмена',
+          confirmProceedBtn: 'Перейти к поддержке',
+          termsModalTitle: 'Отказ от ответственности о вымысле',
+          termsModalSub: 'Полные условия относительно вымышленной природы всех произведений.',
+          closeTermsBtn: 'Закрыть',
+          langModalTitle: 'Выберите язык',
+          closeLangModal: 'Закрыть',
+          contrastLabel: 'Контраст',
+          grayscaleLabel: 'Оттенки серого',
+          saturateLabel: 'Насыщенность',
+          crosshairLabel: 'Цвет прицела',
+          cursorEnableLabel: 'Включить помощь прицела',
+          resetAccBtn: 'Сбросить',
+          translateBanner: 'Похоже, ваш язык может не полностью поддерживаться здесь. Хотите использовать Google Translate, чтобы читать эту страницу на вашем языке?',
+          translateWarning: '⚠️ Машинный перевод может быть неточным. Всегда проверяйте важную информацию.',
+          translateYes: 'Да, перевести',
+          translateNo: 'Нет, спасибо'
+        },
+        mn: {
+          brand: 'UPL төслийг дэмжих',
+          fictionNote: '<strong>Бүх бүтээл нь уран зохиол юм.</strong> Бодит хүн, газар, үйл явдал дүрслэгдээгүй. Энэ бол бүтээлч бичлэгийн төсөл.',
+          title: '<span class="upl-shine">UPL</span> төслийг дэмжих',
+          subhead: 'Орчлон бүр, дүр бүр, эргэлт бүр — анхаарал халамж, олон аяга кофетойгоор бүтээгдсэн. Хэрэв та миний бүтээсэн ертөнцөд дуртай бол бэхээ урсгасаар байхад тусалж болно.',
+          card1Title: 'Олон Орчлон',
+          card1Desc: 'Мөрдөн байцаалтаас эхлээд спекулятив уран зохиол хүртэл — хоорондоо холбоотой ч тус тусдаа.',
+          card2Title: 'Эх Уран Зохиол',
+          card2Desc: 'Бүх түүх бол төсөөллийн эх бүтээл. Бодит үйл явдалд үндэслээгүй.',
+          card3Title: 'Үнэгүй Унших',
+          card3Desc: 'Бүх түүх үнэгүй хэвээр байна. Дэмжлэг нь сонголттой бөгөөд бүтээлийг үзэхэд хэзээ ч шаардлагагүй.',
+          disclaimerBanner: '<strong>⚠️ Чухал:</strong> Энэ бол <strong>зөвхөн уран зохиолын</strong> бүтээлч төсөл. Ямар ч бараа, үйлчилгээ, биет зүйл эсвэл бодит тусламж санал болгохгүй, дурдахгүй. Таны дэмжлэг эдгээр түүхийг бичих, нийтлэхэд зарцуулсан цаг, хэрэгсэлд шууд очно.',
+          openConfirmBtn: '☕ Дэмжих &nbsp;→&nbsp; Уран зохиолын нөхцөлийг баталгаажуулах',
+          readTermsBtn: '📄 Бүрэн татгалзлыг унших',
+          smallPrint: 'Дэмжих товчийг дарснаар та бүх агуулга уран зохиол гэдгийг, ямар ч бараа, үйлчилгээ солилцохгүй гэдгийг баталгаажуулахыг хүсэх болно.',
+          footerLine1: '© 2025–2026 <strong>UPL төслийг дэмжих</strong> · Бүх түүх, орчлон нь уран зохиолын бүтээл. Бодит хүн, байгууллага, үйл явдал дүрслэгдээгүй.',
+          footerLine2: 'Энэ хуудас бол бүтээлч төсөл. <a href="#" id="footerTermsLink">Бүрэн уран зохиолын татгалзлыг уншина уу</a>.',
+          confirmModalTitle: 'Уран зохиолын баталгаажуулалт',
+          confirmModalSub: 'Бүтээлийг дэмжихээс өмнө уншиж, зөвшөөрнө үү.',
+          agreeLabel: '<strong>Би зөвшөөрч байна</strong> — Бүх бүтээл уран зохиол гэдгийг, ямар ч бараа, үйлчилгээ үзүүлэхгүй гэдгийг, миний дэмжлэг ямар ч хариу буцаалт хүлээхгүй сайн дурын бэлэг гэдгийг ойлгож байна.',
+          cancelModalBtn: 'Цуцлах',
+          confirmProceedBtn: 'Дэмжлэг рүү үргэлжлүүлэх',
+          termsModalTitle: 'Уран зохиолын татгалзал',
+          termsModalSub: 'Бүх бүтээлийн уран зохиолын шинж чанарын бүрэн нөхцөл.',
+          closeTermsBtn: 'Хаах',
+          langModalTitle: 'Хэл сонгох',
+          closeLangModal: 'Хаах',
+          contrastLabel: 'Тодосгол',
+          grayscaleLabel: 'Саарал',
+          saturateLabel: 'Ханалт',
+          crosshairLabel: 'Харааны цэгийн өнгө',
+          cursorEnableLabel: 'Харааны цэгийн туслахыг идэвхжүүлэх',
+          resetAccBtn: 'Дахин тохируулах',
+          translateBanner: 'Таны хэл энд бүрэн дэмжигдээгүй байж магадгүй. Энэ хуудсыг өөрийн хэлээр уншихад Google Translate ашиглахыг хүсэж байна уу?',
+          translateWarning: '⚠️ Машины орчуулга буруу байж болно. Чухал мэдээллийг үргэлж шалгаарай.',
+          translateYes: 'Тийм, орчуулах',
+          translateNo: 'Үгүй, баярлалаа'
+        },
+        ja: {
+          brand: 'UPLプロジェクトを支援',
+          fictionNote: '<strong>すべての作品はフィクションです。</strong>実在の人物、場所、出来事は描写されていません。これは創作執筆プロジェクトです。',
+          title: '<span class="upl-shine">UPL</span>プロジェクトを支援',
+          subhead: 'すべての宇宙、すべてのキャラクター、すべての展開 — 丁寧に、そしてたくさんのコーヒーとともに作られています。私が創る世界を気に入っていただけたら、インクが流れ続けるよう支援できます。',
+          card1Title: '複数の宇宙',
+          card1Desc: '手続きものから思弁フィクションまで — 相互接続しながらも、それぞれ独立しています。',
+          card2Title: 'オリジナルフィクション',
+          card2Desc: 'すべての物語は想像力によるオリジナル作品です。実話に基づくものはありません。',
+          card3Title: '無料で読める',
+          card3Desc: 'すべての物語は無料のままです。支援は任意であり、作品を楽しむために必要となることは決してありません。',
+          disclaimerBanner: '<strong>⚠️ 重要：</strong>これは<strong>フィクションのみ</strong>の創作プロジェクトです。商品、サービス、物理的な物品、現実の支援は提供も示唆もされません。あなたの支援は、これらの物語を書き、公開するために使われる時間とツールに直接充てられます。',
+          openConfirmBtn: '☕ 支援する &nbsp;→&nbsp; フィクション規約を確認',
+          readTermsBtn: '📄 完全な免責事項を読む',
+          smallPrint: '支援ボタンをクリックすると、すべての内容がフィクションであり、商品やサービスの交換がないことを理解していることを確認するよう求められます。',
+          footerLine1: '© 2025–2026 <strong>UPLプロジェクトを支援</strong> · すべての物語と宇宙はフィクション作品です。実在の人物、組織、出来事は表現されていません。',
+          footerLine2: 'このページは創作プロジェクトです。<a href="#" id="footerTermsLink">完全なフィクション免責事項を読む</a>。',
+          confirmModalTitle: 'フィクション確認',
+          confirmModalSub: '作品の支援を続ける前に、お読みになり同意してください。',
+          agreeLabel: '<strong>同意します</strong> — すべての作品がフィクションであり、商品やサービスが提供されず、私の支援が見返りを期待しない自発的な贈り物であることを理解しています。',
+          cancelModalBtn: 'キャンセル',
+          confirmProceedBtn: '支援に進む',
+          termsModalTitle: 'フィクション免責事項',
+          termsModalSub: 'すべての作品のフィクションとしての性質に関する完全な規約。',
+          closeTermsBtn: '閉じる',
+          langModalTitle: '言語を選択',
+          closeLangModal: '閉じる',
+          contrastLabel: 'コントラスト',
+          grayscaleLabel: 'グレースケール',
+          saturateLabel: '彩度',
+          crosshairLabel: 'クロスヘアの色',
+          cursorEnableLabel: 'クロスヘアアシストを有効にする',
+          resetAccBtn: 'リセット',
+          translateBanner: 'お使いの言語はここでは完全にサポートされていない可能性があります。Google翻訳を使ってこのページをお使いの言語で読みますか？',
+          translateWarning: '⚠️ 機械翻訳は不正確な場合があります。重要な情報は必ず確認してください。',
+          translateYes: 'はい、翻訳する',
+          translateNo: 'いいえ、結構です'
+        },
+        ko: {
+          brand: 'UPL 프로젝트 후원',
+          fictionNote: '<strong>모든 작품은 허구입니다.</strong> 실제 인물, 장소, 사건은 묘사되지 않았습니다. 이것은 창작 집필 프로젝트입니다.',
+          title: '<span class="upl-shine">UPL</span> 프로젝트 후원',
+          subhead: '모든 우주, 모든 캐릭터, 모든 반전 — 정성과 많은 커피로 만들어졌습니다. 제가 만든 세계를 즐기신다면, 잉크가 계속 흐르도록 도울 수 있습니다.',
+          card1Title: '다중 우주',
+          card1Desc: '절차물에서 사변 소설까지 — 서로 연결되어 있지만 각각 독립적입니다.',
+          card2Title: '독창적 허구',
+          card2Desc: '모든 이야기는 상상력의 독창적 작품입니다. 실제 사건에 기반한 것은 없습니다.',
+          card3Title: '무료로 읽기',
+          card3Desc: '모든 이야기는 무료로 유지됩니다. 후원은 선택 사항이며 작품을 즐기는 데 결코 필요하지 않습니다.',
+          disclaimerBanner: '<strong>⚠️ 중요:</strong> 이것은 <strong>허구 전용</strong> 창작 프로젝트입니다. 어떤 상품, 서비스, 물리적 물품 또는 실제 지원도 제공되거나 암시되지 않습니다. 귀하의 후원은 이 이야기들을 쓰고 게시하는 데 사용되는 시간과 도구에 직접 사용됩니다.',
+          openConfirmBtn: '☕ 후원하기 &nbsp;→&nbsp; 허구 약관 확인',
+          readTermsBtn: '📄 전체 면책 조항 읽기',
+          smallPrint: '후원 버튼을 클릭하면 모든 콘텐츠가 허구이며 상품이나 서비스가 교환되지 않음을 이해했는지 확인하라는 메시지가 표시됩니다.',
+          footerLine1: '© 2025–2026 <strong>UPL 프로젝트 후원</strong> · 모든 이야기와 우주는 허구 작품입니다. 실제 인물, 조직 또는 사건은 표현되지 않았습니다.',
+          footerLine2: '이 페이지는 창작 프로젝트입니다. <a href="#" id="footerTermsLink">전체 허구 면책 조항을 읽어보세요</a>.',
+          confirmModalTitle: '허구 확인',
+          confirmModalSub: '작품 후원을 계속하기 전에 읽고 동의해 주세요.',
+          agreeLabel: '<strong>동의합니다</strong> — 모든 작품이 허구이며, 어떤 상품이나 서비스도 제공되지 않고, 제 후원은 아무런 대가를 기대하지 않는 자발적 선물임을 이해합니다.',
+          cancelModalBtn: '취소',
+          confirmProceedBtn: '후원으로 진행',
+          termsModalTitle: '허구 면책 조항',
+          termsModalSub: '모든 작품의 허구적 성격에 관한 전체 약관.',
+          closeTermsBtn: '닫기',
+          langModalTitle: '언어 선택',
+          closeLangModal: '닫기',
+          contrastLabel: '대비',
+          grayscaleLabel: '흑백',
+          saturateLabel: '채도',
+          crosshairLabel: '조준선 색상',
+          cursorEnableLabel: '조준선 보조 켜기',
+          resetAccBtn: '초기화',
+          translateBanner: '귀하의 언어가 여기에서 완전히 지원되지 않을 수 있습니다. Google 번역을 사용하여 이 페이지를 귀하의 언어로 읽으시겠습니까?',
+          translateWarning: '⚠️ 기계 번역은 부정확할 수 있습니다. 중요한 정보는 항상 다시 확인하세요.',
+          translateYes: '예, 번역',
+          translateNo: '아니요, 괜찮습니다'
+        },
+        hi: {
+          brand: 'UPL परियोजना का समर्थन करें',
+          fictionNote: '<strong>सभी कृतियाँ काल्पनिक हैं।</strong> किसी वास्तविक व्यक्ति, स्थान या घटना को चित्रित नहीं किया गया है। यह एक रचनात्मक लेखन परियोजना है।',
+          title: '<span class="upl-shine">UPL</span> परियोजना का समर्थन करें',
+          subhead: 'हर ब्रह्मांड, हर पात्र, हर मोड़ — देखभाल और बहुत सारी कॉफी के साथ तैयार किया गया। यदि आप मेरे बनाए हुए संसार का आनंद लेते हैं, तो आप स्याही बहती रखने में मदद कर सकते हैं।',
+          card1Title: 'कई ब्रह्मांड',
+          card1Desc: 'प्रक्रियात्मक से लेकर कल्पनाशील कथा तक — आपस में जुड़े, फिर भी प्रत्येक स्वतंत्र।',
+          card2Title: 'मौलिक काल्पनिक',
+          card2Desc: 'हर कहानी कल्पना की एक मौलिक कृति है। कुछ भी वास्तविक घटनाओं पर आधारित नहीं है।',
+          card3Title: 'पढ़ने के लिए निःशुल्क',
+          card3Desc: 'सभी कहानियाँ निःशुल्क रहती हैं। समर्थन वैकल्पिक है और कृति का आनंद लेने के लिए कभी आवश्यक नहीं है।',
+          disclaimerBanner: '<strong>⚠️ महत्वपूर्ण:</strong> यह एक <strong>केवल काल्पनिक</strong> रचनात्मक परियोजना है। कोई भी माल, सेवा, भौतिक सामान या वास्तविक सहायता प्रदान या निहित नहीं की जाती है। आपका समर्थन सीधे इन कहानियों को लिखने और प्रकाशित करने में लगे समय और उपकरणों में जाता है।',
+          openConfirmBtn: '☕ समर्थन करें &nbsp;→&nbsp; काल्पनिक शर्तों की पुष्टि करें',
+          readTermsBtn: '📄 पूर्ण अस्वीकरण पढ़ें',
+          smallPrint: 'समर्थन बटन पर क्लिक करने पर, आपसे पुष्टि करने के लिए कहा जाएगा कि आप समझते हैं कि सभी सामग्री काल्पनिक है और कोई माल या सेवा का आदान-प्रदान नहीं होता।',
+          footerLine1: '© 2025–2026 <strong>UPL परियोजना का समर्थन करें</strong> · सभी कहानियाँ और ब्रह्मांड काल्पनिक कृतियाँ हैं। किसी वास्तविक व्यक्ति, संगठन या घटना का प्रतिनिधित्व नहीं किया गया है।',
+          footerLine2: 'यह पृष्ठ एक रचनात्मक परियोजना है। <a href="#" id="footerTermsLink">पूर्ण काल्पनिक अस्वीकरण पढ़ें</a>।',
+          confirmModalTitle: 'काल्पनिक पुष्टि',
+          confirmModalSub: 'कृति का समर्थन जारी रखने से पहले कृपया पढ़ें और सहमत हों।',
+          agreeLabel: '<strong>मैं सहमत हूँ</strong> — मैं समझता हूँ कि सभी कृतियाँ काल्पनिक हैं, कोई माल या सेवा प्रदान नहीं की जाती, और मेरा समर्थन बिना किसी अपेक्षा के एक स्वैच्छिक उपहार है।',
+          cancelModalBtn: 'रद्द करें',
+          confirmProceedBtn: 'समर्थन के लिए आगे बढ़ें',
+          termsModalTitle: 'काल्पनिक अस्वीकरण',
+          termsModalSub: 'सभी कृतियों की काल्पनिक प्रकृति के संबंध में पूर्ण शर्तें।',
+          closeTermsBtn: 'बंद करें',
+          langModalTitle: 'भाषा चुनें',
+          closeLangModal: 'बंद करें',
+          contrastLabel: 'कंट्रास्ट',
+          grayscaleLabel: 'ग्रेस्केल',
+          saturateLabel: 'संतृप्ति',
+          crosshairLabel: 'क्रॉसहेयर का रंग',
+          cursorEnableLabel: 'क्रॉसहेयर सहायता सक्षम करें',
+          resetAccBtn: 'रीसेट करें',
+          translateBanner: 'ऐसा लगता है कि आपकी भाषा यहाँ पूरी तरह समर्थित नहीं हो सकती है। क्या आप इस पृष्ठ को अपनी भाषा में पढ़ने के लिए Google Translate का उपयोग करना चाहेंगे?',
+          translateWarning: '⚠️ मशीन अनुवाद गलत हो सकता है। कृपया महत्वपूर्ण जानकारी की हमेशा दोबारा जाँच करें।',
+          translateYes: 'हाँ, अनुवाद करें',
+          translateNo: 'नहीं, धन्यवाद'
+        }
+      };
 
-      // open confirmation modal (with checkbox)
-      function openConfirmModal() {
-        agreeCheckbox.checked = false;
-        confirmBtn.disabled = true;
-        confirmModal.classList.add('active');
+      var langList = [
+        { code: 'en', name: 'English (UK)' },
+        { code: 'zh-Hans', name: '简体白话' },
+        { code: 'es', name: 'Español' },
+        { code: 'de', name: 'Deutsch' },
+        { code: 'pt', name: 'Português' },
+        { code: 'zh-Hant', name: '正體官話' },
+        { code: 'fr', name: 'Français' },
+        { code: 'lzh', name: '简体文言' },
+        { code: 'ru', name: 'Русский' },
+        { code: 'mn', name: 'Монгол хэл' },
+        { code: 'ja', name: '日本語' },
+        { code: 'ko', name: '한국어' },
+        { code: 'hi', name: 'हिन्दी' },
+        { code: 'zh-Classical', name: '華夏文言' }
+      ];
+
+      var currentLang = 'en';
+
+      function getBrowserLanguage() {
+        var navLang = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+        navLang = navLang.toLowerCase();
+        var base = navLang.split('-')[0];
+        var supported = ['en', 'zh-hans', 'zh-hant', 'es', 'de', 'pt', 'fr', 'lzh', 'ru', 'mn', 'ja', 'ko', 'hi', 'zh-classical'];
+        if (supported.indexOf(navLang) !== -1) return navLang;
+        if (base === 'zh') {
+          if (/tw|hk|mo|hant/.test(navLang)) return 'zh-hant';
+          return 'zh-hans';
+        }
+        if (supported.indexOf(base) !== -1) return base;
+        return null;
+      }
+
+      function getLangCodeForGoogleTranslate(lang) {
+        var map = {
+          'en': 'en',
+          'zh-Hans': 'zh-CN',
+          'zh-Hant': 'zh-TW',
+          'lzh': 'zh-CN',
+          'zh-Classical': 'zh-CN',
+          'es': 'es',
+          'de': 'de',
+          'pt': 'pt',
+          'fr': 'fr',
+          'ru': 'ru',
+          'mn': 'mn',
+          'ja': 'ja',
+          'ko': 'ko',
+          'hi': 'hi'
+        };
+        return map[lang] || 'en';
+      }
+
+      function applyLanguage(lang) {
+        var t = translations[lang];
+        if (!t) {
+          lang = 'en';
+          t = translations.en;
+        }
+        currentLang = lang;
+
+        function setText(id, key) {
+          var el = document.getElementById(id);
+          if (el && t[key] !== undefined) el.innerHTML = t[key];
+        }
+
+        setText('fictionNoteText', 'fictionNote');
+        setText('supportTitle', 'title');
+        setText('supportSubhead', 'subhead');
+        setText('card1Title', 'card1Title');
+        setText('card1Desc', 'card1Desc');
+        setText('card2Title', 'card2Title');
+        setText('card2Desc', 'card2Desc');
+        setText('card3Title', 'card3Title');
+        setText('card3Desc', 'card3Desc');
+        setText('disclaimerBanner', 'disclaimerBanner');
+        setText('openConfirmBtn', 'openConfirmBtn');
+        setText('readTermsBtn', 'readTermsBtn');
+        setText('smallPrint', 'smallPrint');
+        setText('footerLine1', 'footerLine1');
+        setText('footerLine2', 'footerLine2');
+
+        var brandEl = document.getElementById('navBrand');
+        if (brandEl) {
+          brandEl.innerHTML = '<span class="badge">◈</span><span>' + t.brand + '</span>';
+        }
+
+        setText('confirmModalTitle', 'confirmModalTitle');
+        setText('confirmModalSub', 'confirmModalSub');
+        setText('agreeLabel', 'agreeLabel');
+        setText('cancelModalBtn', 'cancelModalBtn');
+        setText('confirmProceedBtn', 'confirmProceedBtn');
+        setText('termsModalTitle', 'termsModalTitle');
+        setText('termsModalSub', 'termsModalSub');
+        setText('closeTermsBtn', 'closeTermsBtn');
+        setText('langModalTitle', 'langModalTitle');
+        setText('closeLangModal', 'closeLangModal');
+
+        setText('contrastLabel', 'contrastLabel');
+        setText('grayscaleLabel', 'grayscaleLabel');
+        setText('saturateLabel', 'saturateLabel');
+        setText('crosshairLabel', 'crosshairLabel');
+        setText('cursorEnableLabel', 'cursorEnableLabel');
+        setText('resetAccBtn', 'resetAccBtn');
+
+        document.documentElement.lang = lang === 'en' ? 'en-GB' : lang;
+
+        var footerTermsLink = document.getElementById('footerTermsLink');
+        if (footerTermsLink) {
+          footerTermsLink.onclick = function(e) {
+            e.preventDefault();
+            openTermsModal();
+          };
+        }
+
+        updateTranslateBanner(lang);
+      }
+
+      function updateTranslateBanner(lang) {
+        var container = document.getElementById('translateBannerContainer');
+        if (!container) return;
+
+        var stored = sessionStorage.getItem('upl_translate_dismissed');
+        if (stored === 'true') {
+          container.innerHTML = '';
+          return;
+        }
+
+        var browserLang = getBrowserLanguage();
+        if (browserLang && translations[browserLang]) {
+          container.innerHTML = '';
+          return;
+        }
+
+        var t = translations[lang] || translations.en;
+        var html = '<div class="translate-banner">' +
+          '<p>' + t.translateBanner +
+          '<span class="warning">' + t.translateWarning + '</span></p>' +
+          '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">' +
+          '<button id="translateYesBtn">' + t.translateYes + '</button>' +
+          '<button id="translateNoBtn" class="dismiss">' + t.translateNo + '</button>' +
+          '</div></div>';
+        container.innerHTML = html;
+
+        var yesBtn = document.getElementById('translateYesBtn');
+        var noBtn = document.getElementById('translateNoBtn');
+
+        if (yesBtn) {
+          yesBtn.onclick = function() {
+            var targetLang = getLangCodeForGoogleTranslate(lang);
+            var url = 'https://translate.google.com/translate?sl=auto&tl=' + targetLang + '&u=' + encodeURIComponent(window.location.href);
+            window.open(url, '_blank', 'noopener,noreferrer');
+          };
+        }
+
+        if (noBtn) {
+          noBtn.onclick = function() {
+            sessionStorage.setItem('upl_translate_dismissed', 'true');
+            container.innerHTML = '';
+          };
+        }
+      }
+
+      function showLangModal() {
+        var modal = document.getElementById('langModal');
+        var grid = document.getElementById('langGrid');
+        grid.innerHTML = '';
+        langList.forEach(function(l) {
+          var btn = document.createElement('div');
+          btn.className = 'lang-option';
+          btn.innerText = l.name;
+          btn.onclick = function() {
+            currentLang = l.code;
+            applyLanguage(currentLang);
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            localStorage.setItem('upl_lang', currentLang);
+          };
+          grid.appendChild(btn);
+        });
+        modal.classList.add('active');
         document.body.style.overflow = 'hidden';
       }
 
-      // open terms-only modal
-      function openTermsModal() {
-        termsModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
-
-      // close all modals
-      function closeAllModals() {
-        confirmModal.classList.remove('active');
-        termsModal.classList.remove('active');
+      function closeLangModal() {
+        document.getElementById('langModal').classList.remove('active');
         document.body.style.overflow = '';
       }
 
-      // event listeners
-      openConfirmBtn.addEventListener('click', openConfirmModal);
-      readTermsBtn.addEventListener('click', openTermsModal);
-      footerTermsLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        openTermsModal();
-      });
+      function openConfirmModal() {
+        var agreeCheckbox = document.getElementById('agreeCheckbox');
+        var confirmBtn = document.getElementById('confirmProceedBtn');
+        agreeCheckbox.checked = false;
+        confirmBtn.disabled = true;
+        document.getElementById('confirmModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
 
-      cancelModalBtn.addEventListener('click', closeAllModals);
-      closeTermsBtn.addEventListener('click', closeAllModals);
+      function openTermsModal() {
+        document.getElementById('termsModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
 
-      // close on overlay click (but not on modal content)
-      [confirmModal, termsModal].forEach(function(overlay) {
-        overlay.addEventListener('click', function(e) {
-          if (e.target === overlay) {
-            closeAllModals();
-          }
-        });
-      });
+      function closeAllModals() {
+        document.getElementById('confirmModal').classList.remove('active');
+        document.getElementById('termsModal').classList.remove('active');
+        document.getElementById('langModal').classList.remove('active');
+        document.body.style.overflow = '';
+      }
 
-      // close on Escape
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeAllModals();
+      function toggleAccPanel() {
+        document.getElementById('accPanel').classList.toggle('show');
+      }
+
+      function applyFilters() {
+        var c = document.getElementById('con-range').value;
+        var g = document.getElementById('gray-range').value;
+        var s = document.getElementById('sat-range').value;
+        document.getElementById('mainFilter').style.filter = 'contrast(' + c + ') grayscale(' + g + ') saturate(' + s + ')';
+      }
+
+      function resetAcc() {
+        document.getElementById('con-range').value = 1;
+        document.getElementById('gray-range').value = 0;
+        document.getElementById('sat-range').value = 1;
+        document.getElementById('cursor-cb').checked = false;
+        toggleCursorAssist(false);
+        applyFilters();
+      }
+
+      function toggleCursorAssist(on) {
+        var h = document.getElementById('cursor-highlight');
+        h.style.display = on ? 'block' : 'none';
+        document.body.style.cursor = on ? 'none' : 'default';
+        updateCursorStyle();
+      }
+
+      function updateCursorStyle() {
+        var sel = document.getElementById('cursor-color-select');
+        if (sel) {
+          var parts = sel.value.split('|');
+          document.documentElement.style.setProperty('--cursor-color', parts[0]);
+          document.documentElement.style.setProperty('--cursor-border', parts[1]);
         }
-      });
+      }
 
-      // checkbox enables confirm button
-      agreeCheckbox.addEventListener('change', function() {
-        confirmBtn.disabled = !this.checked;
-      });
+      function initAccessibility() {
+        document.getElementById('accToggleBtn').addEventListener('click', toggleAccPanel);
+        document.getElementById('con-range').addEventListener('input', applyFilters);
+        document.getElementById('gray-range').addEventListener('input', applyFilters);
+        document.getElementById('sat-range').addEventListener('input', applyFilters);
+        document.getElementById('cursor-color-select').addEventListener('change', updateCursorStyle);
+        document.getElementById('cursor-cb').addEventListener('change', function(e) {
+          toggleCursorAssist(e.target.checked);
+        });
+        document.getElementById('resetAccBtn').addEventListener('click', resetAcc);
 
-      // proceed to Buy Me a Coffee after confirmation
-      confirmBtn.addEventListener('click', function() {
-        if (!agreeCheckbox.checked) return;
-
-        // open BMC in new tab
-        window.open('https://www.buymeacoffee.com/flamezingel', '_blank', 'noopener,noreferrer');
-
-        // close modal
-        closeAllModals();
-
-        // optional subtle confirmation feedback (non-intrusive)
-        // we could show a small toast, but keep it clean.
-      });
-
-      // ensure focus trap is not overly complex; simple accessibility
-      // when modal opens, focus the first interactive element
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(m) {
-          if (m.target === confirmModal && confirmModal.classList.contains('active')) {
-            // focus checkbox
-            setTimeout(function() { agreeCheckbox.focus(); }, 80);
-          }
-          if (m.target === termsModal && termsModal.classList.contains('active')) {
-            setTimeout(function() { closeTermsBtn.focus(); }, 80);
+        document.addEventListener('mousemove', function(e) {
+          var cursor = document.getElementById('cursor-highlight');
+          if (cursor && cursor.style.display === 'block') {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
           }
         });
-      });
-      observer.observe(confirmModal, { attributes: true, attributeFilter: ['class'] });
-      observer.observe(termsModal, { attributes: true, attributeFilter: ['class'] });
+      }
+
+      function initModals() {
+        document.getElementById('openConfirmBtn').addEventListener('click', openConfirmModal);
+        document.getElementById('readTermsBtn').addEventListener('click', openTermsModal);
+        document.getElementById('cancelModalBtn').addEventListener('click', closeAllModals);
+        document.getElementById('closeTermsBtn').addEventListener('click', closeAllModals);
+        document.getElementById('closeLangModal').addEventListener('click', closeLangModal);
+
+        var footerTermsLink = document.getElementById('footerTermsLink');
+        if (footerTermsLink) {
+          footerTermsLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            openTermsModal();
+          });
+        }
+
+        var agreeCheckbox = document.getElementById('agreeCheckbox');
+        var confirmBtn = document.getElementById('confirmProceedBtn');
+        agreeCheckbox.addEventListener('change', function() {
+          confirmBtn.disabled = !this.checked;
+        });
+
+        confirmBtn.addEventListener('click', function() {
+          if (!agreeCheckbox.checked) return;
+          window.open('https://www.buymeacoffee.com/flamezingel', '_blank', 'noopener,noreferrer');
+          closeAllModals();
+        });
+
+        ['confirmModal', 'termsModal', 'langModal'].forEach(function(id) {
+          document.getElementById(id).addEventListener('click', function(e) {
+            if (e.target === this) closeAllModals();
+          });
+        });
+
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') closeAllModals();
+        });
+      }
+
+      function initTheme() {
+        document.getElementById('themeToggleBtn').addEventListener('click', function() {
+          document.body.classList.toggle('light');
+        });
+      }
+
+      function initLanguage() {
+        document.getElementById('langSwitchBtn').addEventListener('click', showLangModal);
+      }
+
+      function initBrand() {
+        document.getElementById('navBrand').addEventListener('click', function() {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      function initAll() {
+        initAccessibility();
+        initModals();
+        initTheme();
+        initLanguage();
+        initBrand();
+
+        var stored = localStorage.getItem('upl_lang');
+        if (stored && translations[stored]) {
+          currentLang = stored;
+        } else {
+          var detected = getBrowserLanguage();
+          if (detected && translations[detected]) {
+            currentLang = detected;
+          } else {
+            currentLang = 'en';
+          }
+        }
+        applyLanguage(currentLang);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+      } else {
+        initAll();
+      }
 
     })();
   </script>
-
 </body>
 </html>
