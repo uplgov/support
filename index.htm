@@ -29,6 +29,8 @@
       --cursor-border: #cc3333;
       --cc-navy: #7da0d6;
       --cc-brass: #d4aa4f;
+      --fiction-note-bg: #1a1f2b;
+      --fiction-note-text: #9aaebf;
     }
 
     body.light {
@@ -42,17 +44,30 @@
       --btn-bg: #eef2f7;
       --cc-navy: #1b3358;
       --cc-brass: #a87d22;
+      --fiction-note-bg: #eef2f7;
+      --fiction-note-text: #3a4a5e;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
       font-family: 'Georgia', 'Iowan Old Style', 'Songti SC', 'Noto Serif CJK SC', SimSun, serif;
       background-color: var(--bg-primary);
       color: var(--text-primary);
-      transition: background 0.3s;
+      transition: background 0.3s, color 0.3s;
       overflow-x: hidden;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    #page-filter {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 100vh;
     }
 
     #cursor-highlight {
@@ -91,13 +106,6 @@
       transform: translate(-50%, -50%);
     }
 
-    .band {
-      height: 14px;
-      flex: none;
-      background: conic-gradient(#7da0d6 25%, #0b1220 0 50%, #7da0d6 0 75%, #0b1220 0) 0 0/28px 28px;
-      border-block: 1px solid #7da0d6;
-    }
-
     .container {
       max-width: 960px;
       margin: 0 auto;
@@ -117,6 +125,7 @@
       position: sticky;
       top: 0;
       z-index: 1000;
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .brand {
@@ -159,6 +168,7 @@
       background: var(--cc-navy);
       color: var(--bg-secondary);
       font: 700 0.9rem Georgia, serif;
+      transition: background 0.3s, color 0.3s;
     }
 
     .nav-controls {
@@ -213,6 +223,7 @@
       display: none;
       border-radius: 8px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .acc-panel.show {
@@ -268,15 +279,16 @@
     }
 
     .fiction-note {
-      background: #1a1f2b;
+      background: var(--fiction-note-bg);
       border-left: 4px solid var(--fiction-accent);
       padding: 0.9rem 1.5rem;
       font-size: 0.95rem;
-      color: var(--text-secondary);
+      color: var(--fiction-note-text);
       display: flex;
       align-items: center;
       gap: 0.6rem;
       flex-wrap: wrap;
+      transition: background 0.3s, color 0.3s;
     }
 
     .fiction-note strong {
@@ -292,6 +304,7 @@
       box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
       position: relative;
       overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .support-card::before {
@@ -628,15 +641,16 @@
     }
 
     .disclaimer-banner {
-      background: #1a1f2b;
+      background: var(--fiction-note-bg);
       border: 1px dashed var(--fiction-accent);
       border-radius: 12px;
       padding: 1rem 1.5rem;
       margin: 1.8rem 0;
       font-size: 0.88rem;
-      color: var(--text-secondary);
+      color: var(--fiction-note-text);
       line-height: 1.5;
       text-align: center;
+      transition: background 0.3s, color 0.3s;
     }
 
     .disclaimer-banner strong {
@@ -663,11 +677,12 @@
 
     .lang-option:hover {
       background: var(--police-blue);
+      color: #fff;
       transform: translateY(-2px);
     }
 
     .translate-banner {
-      background: #1a1f2b;
+      background: var(--fiction-note-bg);
       border: 1px solid var(--cc-brass);
       border-radius: 12px;
       padding: 1.1rem 1.4rem;
@@ -680,6 +695,7 @@
       align-items: center;
       gap: 1rem;
       justify-content: space-between;
+      transition: background 0.3s, color 0.3s;
     }
 
     .translate-banner p {
@@ -762,130 +778,128 @@
 
   <div id="cursor-highlight"></div>
 
-  <div class="band"></div>
+  <div id="page-filter">
+    <header class="top-bar">
+      <div class="brand" id="navBrand">
+        <span class="badge">◈</span>
+        <span>Support the <span class="upl-shine">UPL</span> project</span>
+      </div>
+      <div class="nav-controls">
+        <button class="lang-switch-btn" id="langSwitchBtn">A/文</button>
+        <button class="tool-btn" id="themeToggleBtn">THEME</button>
+        <button class="acc-icon-btn" id="accToggleBtn" aria-label="Accessibility tools">♿</button>
+      </div>
+      <div class="acc-panel" id="accPanel">
+        <div class="acc-item">
+          <label id="contrastLabel">Contrast</label>
+          <input type="range" id="con-range" min="0.5" max="2" step="0.1" value="1">
+        </div>
+        <div class="acc-item">
+          <label id="grayscaleLabel">Grayscale</label>
+          <input type="range" id="gray-range" min="0" max="1" step="0.1" value="0">
+        </div>
+        <div class="acc-item">
+          <label id="saturateLabel">Saturate</label>
+          <input type="range" id="sat-range" min="0" max="3" step="0.1" value="1">
+        </div>
+        <div class="acc-item">
+          <label id="crosshairLabel">Crosshair Color</label>
+          <select id="cursor-color-select" class="acc-select">
+            <option value="rgba(204,51,51,0.3)|#cc3333">Red</option>
+            <option value="rgba(52,152,219,0.3)|#3498db">Blue</option>
+            <option value="rgba(50,205,50,0.3)|#32cd32">Lime</option>
+            <option value="rgba(255,255,0,0.3)|#ffff00">Yellow</option>
+          </select>
+        </div>
+        <div class="acc-item">
+          <label>
+            <input type="checkbox" id="cursor-cb">
+            <span id="cursorEnableLabel">Enable Crosshair Assist</span>
+          </label>
+        </div>
+        <button class="btn-action" id="resetAccBtn">Reset</button>
+      </div>
+    </header>
 
-  <header class="top-bar">
-    <div class="brand" id="navBrand">
-      <span class="badge">◈</span>
-      <span>Support the <span class="upl-shine">UPL</span> project</span>
+    <div class="fiction-note" id="fictionNote">
+      <span>📖</span>
+      <span id="fictionNoteText"><strong>All works are fictional.</strong> No real persons, places, or events are depicted. This is a creative writing project.</span>
     </div>
-    <div class="nav-controls">
-      <button class="lang-switch-btn" id="langSwitchBtn">A/文</button>
-      <button class="tool-btn" id="themeToggleBtn">THEME</button>
-      <button class="acc-icon-btn" id="accToggleBtn" aria-label="Accessibility tools">♿</button>
-    </div>
-    <div class="acc-panel" id="accPanel">
-      <div class="acc-item">
-        <label id="contrastLabel">Contrast</label>
-        <input type="range" id="con-range" min="0.5" max="2" step="0.1" value="1">
-      </div>
-      <div class="acc-item">
-        <label id="grayscaleLabel">Grayscale</label>
-        <input type="range" id="gray-range" min="0" max="1" step="0.1" value="0">
-      </div>
-      <div class="acc-item">
-        <label id="saturateLabel">Saturate</label>
-        <input type="range" id="sat-range" min="0" max="3" step="0.1" value="1">
-      </div>
-      <div class="acc-item">
-        <label id="crosshairLabel">Crosshair Color</label>
-        <select id="cursor-color-select" class="acc-select">
-          <option value="rgba(204,51,51,0.3)|#cc3333">Red</option>
-          <option value="rgba(52,152,219,0.3)|#3498db">Blue</option>
-          <option value="rgba(50,205,50,0.3)|#32cd32">Lime</option>
-          <option value="rgba(255,255,0,0.3)|#ffff00">Yellow</option>
-        </select>
-      </div>
-      <div class="acc-item">
-        <label>
-          <input type="checkbox" id="cursor-cb">
-          <span id="cursorEnableLabel">Enable Crosshair Assist</span>
-        </label>
-      </div>
-      <button class="btn-action" id="resetAccBtn">Reset</button>
-    </div>
-  </header>
 
-  <div class="fiction-note" id="fictionNote">
-    <span>📖</span>
-    <span id="fictionNoteText"><strong>All works are fictional.</strong> No real persons, places, or events are depicted. This is a creative writing project.</span>
+    <div class="container" id="translateBannerContainer"></div>
+
+    <main>
+      <div class="container">
+        <div class="support-card" id="supportCard">
+          <h1 id="supportTitle">Support the <span class="upl-shine">UPL</span> Project</h1>
+          <p class="subhead" id="supportSubhead">
+            Every universe, every character, every twist — crafted with care and a lot of coffee.
+            If you enjoy the worlds I build, you can help keep the ink flowing.
+          </p>
+
+          <div class="story-grid">
+            <div class="story-card">
+              <span class="icon">🌍</span>
+              <h3 id="card1Title">Multiple Universes</h3>
+              <p id="card1Desc">From procedurals to speculative fiction — interconnected but each standing alone.</p>
+            </div>
+            <div class="story-card">
+              <span class="icon">✍️</span>
+              <h3 id="card2Title">Original Fiction</h3>
+              <p id="card2Desc">Every story is an original work of imagination. Nothing is based on real events.</p>
+            </div>
+            <div class="story-card">
+              <span class="icon">🎭</span>
+              <h3 id="card3Title">Free to Read</h3>
+              <p id="card3Desc">All stories remain free. Support is optional and never required to enjoy the work.</p>
+            </div>
+          </div>
+
+          <div class="disclaimer-banner" id="disclaimerBanner">
+            <strong>⚠️ Important:</strong> This is a <strong>fiction‑only</strong> creative project.
+            No merchandise, services, physical goods, or real‑world assistance are offered or implied.
+            Your support goes directly toward the time and tools used to write and publish these stories.
+          </div>
+
+          <div class="bmc-wrap">
+            <a href="https://www.buymeacoffee.com/flamezingel" target="_blank" rel="noopener noreferrer" id="bmcLink">
+              <img
+                src="https://img.buymeacoffee.com/button-api/?text=!Support my idea!&emoji=😇&slug=flamezingel&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
+                alt="Support my idea on Buy Me a Coffee"
+              />
+            </a>
+          </div>
+
+          <div class="action-row">
+            <button class="btn-primary" id="openConfirmBtn">
+              ☕ Support &nbsp;→&nbsp; Confirm Fiction Terms
+            </button>
+            <button class="btn-secondary" id="readTermsBtn">
+              📄 Read Full Disclaimer
+            </button>
+          </div>
+
+          <p style="margin-top:1.5rem;font-size:0.82rem;color:var(--text-secondary);line-height:1.5;" id="smallPrint">
+            By clicking the support button, you will be asked to confirm that you understand
+            all content is fictional and that no goods or services are exchanged.
+          </p>
+        </div>
+      </div>
+
+      <div class="container" style="margin-top:auto;">
+        <div class="footer-note">
+          <p id="footerLine1">
+            © 2025–2026 <strong>Support the UPL Project</strong> · All stories and universes are works of fiction.
+            No real persons, organisations, or events are represented.
+          </p>
+          <p style="margin-top:0.6rem;" id="footerLine2">
+            This page is a creative project.
+            <a href="#" id="footerTermsLink">Read the full fiction disclaimer</a>.
+          </p>
+        </div>
+      </div>
+    </main>
   </div>
-
-  <div class="container" id="translateBannerContainer"></div>
-
-  <main id="mainFilter">
-    <div class="container">
-      <div class="support-card" id="supportCard">
-        <h1 id="supportTitle">Support the <span class="upl-shine">UPL</span> Project</h1>
-        <p class="subhead" id="supportSubhead">
-          Every universe, every character, every twist — crafted with care and a lot of coffee.
-          If you enjoy the worlds I build, you can help keep the ink flowing.
-        </p>
-
-        <div class="story-grid">
-          <div class="story-card">
-            <span class="icon">🌍</span>
-            <h3 id="card1Title">Multiple Universes</h3>
-            <p id="card1Desc">From procedurals to speculative fiction — interconnected but each standing alone.</p>
-          </div>
-          <div class="story-card">
-            <span class="icon">✍️</span>
-            <h3 id="card2Title">Original Fiction</h3>
-            <p id="card2Desc">Every story is an original work of imagination. Nothing is based on real events.</p>
-          </div>
-          <div class="story-card">
-            <span class="icon">🎭</span>
-            <h3 id="card3Title">Free to Read</h3>
-            <p id="card3Desc">All stories remain free. Support is optional and never required to enjoy the work.</p>
-          </div>
-        </div>
-
-        <div class="disclaimer-banner" id="disclaimerBanner">
-          <strong>⚠️ Important:</strong> This is a <strong>fiction‑only</strong> creative project.
-          No merchandise, services, physical goods, or real‑world assistance are offered or implied.
-          Your support goes directly toward the time and tools used to write and publish these stories.
-        </div>
-
-        <div class="bmc-wrap">
-          <a href="https://www.buymeacoffee.com/flamezingel" target="_blank" rel="noopener noreferrer">
-            <img
-              src="https://img.buymeacoffee.com/button-api/?text=!Support my idea!&emoji=😇&slug=flamezingel&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
-              alt="Support my idea on Buy Me a Coffee"
-            />
-          </a>
-        </div>
-
-        <div class="action-row">
-          <button class="btn-primary" id="openConfirmBtn">
-            ☕ Support &nbsp;→&nbsp; Confirm Fiction Terms
-          </button>
-          <button class="btn-secondary" id="readTermsBtn">
-            📄 Read Full Disclaimer
-          </button>
-        </div>
-
-        <p style="margin-top:1.5rem;font-size:0.82rem;color:var(--text-secondary);line-height:1.5;" id="smallPrint">
-          By clicking the support button, you will be asked to confirm that you understand
-          all content is fictional and that no goods or services are exchanged.
-        </p>
-      </div>
-    </div>
-
-    <div class="container" style="margin-top:auto;">
-      <div class="footer-note">
-        <p id="footerLine1">
-          © 2025–2026 <strong>Support the UPL Project</strong> · All stories and universes are works of fiction.
-          No real persons, organisations, or events are represented.
-        </p>
-        <p style="margin-top:0.6rem;" id="footerLine2">
-          This page is a creative project.
-          <a href="#" id="footerTermsLink">Read the full fiction disclaimer</a>.
-        </p>
-      </div>
-    </div>
-  </main>
-
-  <div class="band" style="margin-top:0;"></div>
 
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
@@ -1639,49 +1653,49 @@
         }
         currentLang = lang;
 
-        function setText(id, key) {
+        function setHTML(id, key) {
           var el = document.getElementById(id);
           if (el && t[key] !== undefined) el.innerHTML = t[key];
         }
 
-        setText('fictionNoteText', 'fictionNote');
-        setText('supportTitle', 'title');
-        setText('supportSubhead', 'subhead');
-        setText('card1Title', 'card1Title');
-        setText('card1Desc', 'card1Desc');
-        setText('card2Title', 'card2Title');
-        setText('card2Desc', 'card2Desc');
-        setText('card3Title', 'card3Title');
-        setText('card3Desc', 'card3Desc');
-        setText('disclaimerBanner', 'disclaimerBanner');
-        setText('openConfirmBtn', 'openConfirmBtn');
-        setText('readTermsBtn', 'readTermsBtn');
-        setText('smallPrint', 'smallPrint');
-        setText('footerLine1', 'footerLine1');
-        setText('footerLine2', 'footerLine2');
+        setHTML('fictionNoteText', 'fictionNote');
+        setHTML('supportTitle', 'title');
+        setHTML('supportSubhead', 'subhead');
+        setHTML('card1Title', 'card1Title');
+        setHTML('card1Desc', 'card1Desc');
+        setHTML('card2Title', 'card2Title');
+        setHTML('card2Desc', 'card2Desc');
+        setHTML('card3Title', 'card3Title');
+        setHTML('card3Desc', 'card3Desc');
+        setHTML('disclaimerBanner', 'disclaimerBanner');
+        setHTML('openConfirmBtn', 'openConfirmBtn');
+        setHTML('readTermsBtn', 'readTermsBtn');
+        setHTML('smallPrint', 'smallPrint');
+        setHTML('footerLine1', 'footerLine1');
+        setHTML('footerLine2', 'footerLine2');
 
         var brandEl = document.getElementById('navBrand');
         if (brandEl) {
-          brandEl.innerHTML = '<span class="badge">◈</span><span>' + t.brand + '</span>';
+          brandEl.innerHTML = '<span class="badge">◈</span><span>' + t.brand.replace('UPL', '<span class="upl-shine">UPL</span>') + '</span>';
         }
 
-        setText('confirmModalTitle', 'confirmModalTitle');
-        setText('confirmModalSub', 'confirmModalSub');
-        setText('agreeLabel', 'agreeLabel');
-        setText('cancelModalBtn', 'cancelModalBtn');
-        setText('confirmProceedBtn', 'confirmProceedBtn');
-        setText('termsModalTitle', 'termsModalTitle');
-        setText('termsModalSub', 'termsModalSub');
-        setText('closeTermsBtn', 'closeTermsBtn');
-        setText('langModalTitle', 'langModalTitle');
-        setText('closeLangModal', 'closeLangModal');
+        setHTML('confirmModalTitle', 'confirmModalTitle');
+        setHTML('confirmModalSub', 'confirmModalSub');
+        setHTML('agreeLabel', 'agreeLabel');
+        setHTML('cancelModalBtn', 'cancelModalBtn');
+        setHTML('confirmProceedBtn', 'confirmProceedBtn');
+        setHTML('termsModalTitle', 'termsModalTitle');
+        setHTML('termsModalSub', 'termsModalSub');
+        setHTML('closeTermsBtn', 'closeTermsBtn');
+        setHTML('langModalTitle', 'langModalTitle');
+        setHTML('closeLangModal', 'closeLangModal');
 
-        setText('contrastLabel', 'contrastLabel');
-        setText('grayscaleLabel', 'grayscaleLabel');
-        setText('saturateLabel', 'saturateLabel');
-        setText('crosshairLabel', 'crosshairLabel');
-        setText('cursorEnableLabel', 'cursorEnableLabel');
-        setText('resetAccBtn', 'resetAccBtn');
+        setHTML('contrastLabel', 'contrastLabel');
+        setHTML('grayscaleLabel', 'grayscaleLabel');
+        setHTML('saturateLabel', 'saturateLabel');
+        setHTML('crosshairLabel', 'crosshairLabel');
+        setHTML('cursorEnableLabel', 'cursorEnableLabel');
+        setHTML('resetAccBtn', 'resetAccBtn');
 
         document.documentElement.lang = lang === 'en' ? 'en-GB' : lang;
 
@@ -1796,7 +1810,7 @@
         var c = document.getElementById('con-range').value;
         var g = document.getElementById('gray-range').value;
         var s = document.getElementById('sat-range').value;
-        document.getElementById('mainFilter').style.filter = 'contrast(' + c + ') grayscale(' + g + ') saturate(' + s + ')';
+        document.getElementById('page-filter').style.filter = 'contrast(' + c + ') grayscale(' + g + ') saturate(' + s + ')';
       }
 
       function resetAcc() {
